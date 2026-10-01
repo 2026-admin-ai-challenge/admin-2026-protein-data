@@ -18,21 +18,24 @@
 
 Python 3.12 환경에서 실행합니다. 구조 원본 압축파일은 약 818 MiB이며, 데이터 생성과 전체 검증에는 추가 디스크 공간과 시간이 필요합니다.
 
+원본은 **CATH 공식 v4.4 S40 배포본**에서 받습니다. `s40.atom.fa`는 관측된 잔기 서열, `s40.pdb.tgz`는 3D 구조, `domains.txt`는 C.A.T.H 분류표입니다. `s40.fa`도 출처 확인용으로 함께 받습니다. `label`은 분류표의 **Class.Architecture (`C.A`)**이며 3D 좌표는 입력입니다.
+
 ```bash
+cd admin-2026-protein-data
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-python scripts/download_cath.py
-python scripts/prepare_dataset.py
-python scripts/verify_dataset.py
+python scripts/download_cath.py      # 공식 원본만 data/raw/에 다운로드
+python scripts/prepare_dataset.py    # 서열·3D 전처리 후 학습/평가 파일 생성
+python scripts/verify_dataset.py     # 결과 검증
 ```
 
-`data/raw/`에는 CATH 원본, `data/public/`에는 참가자 제공용 파일, `data/private/`에는 숨긴 정답과 원본 ID 매핑이 저장됩니다. 생성물은 모두 Git에서 제외합니다. `prepare_dataset.py`는 기존 정답 파일이 있으면 덮어쓰기를 거부합니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
+`data/raw/`에는 CATH 원본과 SHA-256 기록(`manifest.json`)이 저장됩니다. `data/public/`에는 참가자용 `train.csv`, `train_structures.zip`, `train_features.csv`, 검증 분할, 학습 샘플 3건에서 복사한 추론 예제가 생성됩니다. `data/private/`에는 서버 전용 `test.csv`, `test_structures.zip`, `test_features.csv`, `labels.csv`, 원본 ID 매핑과 체크섬 기록이 생성됩니다. **`private/` 전체를 참가자 다운로드나 추론 컨테이너에 제공하지 마세요.** 생성물은 모두 Git에서 제외합니다. `prepare_dataset.py`도 원본이 없으면 다운로드를 먼저 수행하므로 **한 명령으로 생성하려면 이 명령만 실행**해도 됩니다. 기존 정답 파일은 덮어쓰지 않습니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
 
 웹사이트 저장소와 같은 상위 디렉터리에 이 저장소를 두면 웹사이트의 Docker Compose가 `../admin-2026-protein-data/data`를 API에 읽기 전용으로 연결합니다. 다른 위치라면 웹사이트 `.env`의 `DATA_HOST_DIR`을 설정하세요.
 
 ## 현재 구현 상태
 
-현재 파이프라인은 기존 **CSV 예측 제출 프로토타입**에 맞춰 `test.csv`와 `test_features.csv`를 참가자에게 배포합니다. 새 규칙인 **저장된 모델 제출 → 공개하지 않은 평가 입력으로 격리 추론 → 채점**에 맞게 배포 파일과 채점 연동을 수정해야 합니다. 지금 생성물을 그대로 새 대회의 최종 평가셋으로 배포하지 마세요.
+전처리는 숨김 평가 입력과 정답을 `data/private/`에 분리합니다. **웹사이트 API는 아직 기존 CSV 제출 프로토타입**을 사용하므로 `test.csv` 다운로드 경로, 추론 작업자, 모델 제출 채점 흐름을 별도로 수정해야 합니다. 데이터 생성본만으로 새 대회가 바로 운영되는 것은 아닙니다.
 
 데이터 생성만으로 외부 자료 사용 여부를 증명할 수 없습니다. 새 대회에는 제공 학습 데이터만 사용하도록 규정하고, 상위 팀의 학습 코드·모델을 재현 검증해야 합니다. 팀별 업무와 운영진 문의사항은 [팀별 남은 과제와 문의사항](https://github.com/2026-admin-ai-challenge/admin-2026-protein-structure-challenge/blob/main/ADMIN_%ED%8C%80%EB%B3%84_%EB%82%A8%EC%9D%80_%EA%B3%BC%EC%A0%9C%EC%99%80_%EB%AC%B8%EC%9D%98%EC%82%AC%ED%95%AD.md)을 참조하세요.

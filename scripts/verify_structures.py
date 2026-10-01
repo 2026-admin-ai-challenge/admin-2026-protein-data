@@ -23,12 +23,13 @@ def verify_structures(root):
     assert not set(fit.homologous_superfamily) & set(validation.homologous_superfamily)
     assert set(fit.label) == set(validation.label) == set(train.label)
     for split in ["train", "test"]:
-        frame = pd.read_csv(public / f"{split}.csv", dtype=str)
-        features = pd.read_csv(public / f"{split}_features.csv").set_index("id")
+        directory = public if split == "train" else root / "data/private"
+        frame = pd.read_csv(directory / f"{split}.csv", dtype=str)
+        features = pd.read_csv(directory / f"{split}_features.csv").set_index("id")
         assert features.index.is_unique and set(features.index) == set(frame.id)
         assert list(features.columns) == FEATURE_NAMES
         assert np.isfinite(features.to_numpy()).all()
-        with zipfile.ZipFile(public / f"{split}_structures.zip") as archive:
+        with zipfile.ZipFile(directory / f"{split}_structures.zip") as archive:
             assert len(archive.namelist()) == len(frame)
             assert set(archive.namelist()) == {f"{i}.npz" for i in frame.id}
             for index, row in enumerate(frame.itertuples()):
@@ -51,12 +52,21 @@ def verify_structures(root):
                 assert (np.linalg.norm(np.diff(g['pos'],axis=0)[continuous],axis=1) <= 4.5 + 1e-5).all()
                 assert np.allclose(features.loc[row.id].to_numpy(), structure_features(g), rtol=1e-6, atol=1e-7)
                 if index and index % 5000 == 0: print(f"Verified {split}: {index} structures", flush=True)
-    allowed = {'train.csv','test.csv','sample_submission.csv','train_features.csv','test_features.csv','validation_split.csv',
+    example = pd.read_csv(public / 'example_input.csv', dtype=str)
+    example_features = pd.read_csv(public / 'example_features.csv').set_index('id')
+    assert set(example_features.index) == set(example.id)
+    with zipfile.ZipFile(public / 'example_structures.zip') as archive:
+        assert set(archive.namelist()) == {f'{value}.npz' for value in example.id}
+        with zipfile.ZipFile(public / 'train_structures.zip') as train_archive:
+            for value in example.id:
+                assert archive.read(f'{value}.npz') == train_archive.read(f'{value}.npz')
+    allowed = {'train.csv','train_features.csv','validation_split.csv',
+               'example_input.csv','example_features.csv','example_output.csv','example_structures.zip',
                'baseline.py','structure_features.py','baseline.ipynb','README.md','structure-format.md','requirements.txt'}
     with zipfile.ZipFile(public / "starter_kit.zip") as archive:
         assert len(archive.namelist()) == len(allowed) and set(archive.namelist()) == allowed
         for name in allowed:
-            if name.endswith('.csv'): assert archive.read(name) == (public / name).read_bytes()
+            if name.endswith(('.csv', '.zip')): assert archive.read(name) == (public / name).read_bytes()
     code_only = {'baseline.py','structure_features.py','baseline.ipynb','README.md','structure-format.md','requirements.txt'}
     with zipfile.ZipFile(public / "baseline_code.zip") as archive:
         assert len(archive.namelist()) == len(code_only) and set(archive.namelist()) == code_only

@@ -44,8 +44,8 @@ def clean(seqs, metadata):
 def prepare(root=ROOT):
     raw=root/"data/raw"; public=root/"data/public"; private=root/"data/private"
     public.mkdir(parents=True,exist_ok=True); private.mkdir(parents=True,exist_ok=True)
-    if (private/"labels.csv").exists():
-        raise RuntimeError("Dataset already exists. Stop the competition and archive data before regeneration.")
+    if any(p.name != ".gitkeep" for p in public.iterdir()) or any(p.name != ".gitignore" for p in private.iterdir()):
+        raise RuntimeError("Output directory is not empty. Use a fresh staging root; do not mix old public test files with a new dataset.")
     manifest=download(root)
     rows=[line.split()[:5] for line in (raw/"domains.txt").read_text().splitlines() if line.strip() and not line.startswith("#")]
     metadata=pd.DataFrame(rows,columns=["domain_id","class","architecture","topology","superfamily"])
@@ -70,33 +70,51 @@ def prepare(root=ROOT):
     test["id"]=[f"TEST_{i:06d}" for i in range(1,len(test)+1)]
     test["partition"]=public_private_split(test)
     train.rename(columns={"architecture_label":"label"})[["id","sequence","label"]].to_csv(public/"train.csv",index=False)
-    test[["id","sequence"]].to_csv(public/"test.csv",index=False)
-    # Constant baseline labels, never the actual answer pattern.
-    pd.DataFrame({"id":test.id,"label":sorted(selected)[0]}).to_csv(public/"sample_submission.csv",index=False)
+    # Hidden evaluation inputs and answers belong together under organizer-only storage.
+    test[["id","sequence"]].to_csv(private/"test.csv",index=False)
     test.rename(columns={"architecture_label":"label"})[["id","label","partition"]].to_csv(private/"labels.csv",index=False)
     pd.concat([train,test])[["id","domain_id","homologous_superfamily"]].to_csv(private/"id_mapping.csv",index=False)
     publish_structures(train,raw,public,"train")
-    publish_structures(test,raw,public,"test")
+    publish_structures(test,raw,private,"test")
     # Participant validation fold is opaque, training-only, and preserves complete H groups.
     _,validation=group_split(train.reset_index(drop=True))
     validation_ids=set(validation.id)
     pd.DataFrame({"id":train.id,"fold":["validation" if i in validation_ids else "fit" for i in train.id]}).to_csv(public/"validation_split.csv",index=False)
+    make_example(public)
     make_starter(public)
     lengths=df.sequence_length
     stats={"total":len(df),"classes":len(selected),"train":len(train),"test":len(test),"samples_per_class":{k:int(v) for k,v in df.architecture_label.value_counts().items()},"sequence_length":{"mean":float(lengths.mean()),"median":float(lengths.median()),"min":int(lengths.min()),"max":int(lengths.max())}}
     result={"schema_version":2,"input":"sequence + observed C-alpha coordinates","structure":{"min_ca_coverage":0.95,"residue_sequence":"ATOM domain sequence; exact PDB residue match","exclusions":structure_exclusions},"source":"CATH","version":"4.4","subset":"S40","target":"architecture","seed":SEED,"labels":sorted(selected),"split":{"train":.8,"test":.2,"public_test":.3,"private_test":.7},"actual_train_fraction":len(train)/len(df),"stats":stats,"sources":manifest,"excluded_architectures":rejected,"policy":"Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.","files":{}}
-    for name in ["train.csv","test.csv","sample_submission.csv","train_features.csv","test_features.csv","validation_split.csv"]:
+    for name in ["train.csv","train_features.csv","validation_split.csv","example_input.csv","example_features.csv","example_output.csv"]:
         p=public/name; frame=pd.read_csv(p,dtype=str)
         result["files"][name]={"rows":len(frame),"columns":list(frame.columns),"bytes":p.stat().st_size,"sha256":hashlib.sha256(p.read_bytes()).hexdigest()}
-    for name in ["train_structures.zip","test_structures.zip","starter_kit.zip","baseline_code.zip"]:
+    for name in ["train_structures.zip","example_structures.zip","starter_kit.zip","baseline_code.zip"]:
         p=public/name
         with p.open("rb") as f: digest=hashlib.file_digest(f,"sha256").hexdigest()
         result["files"][name]={"bytes":p.stat().st_size,"sha256":digest,"description":"Participant archive; anonymized data only"}
     (public/"metadata.json").write_text(json.dumps(result,indent=2))
+    private_files={}
+    for name in ["test.csv","test_features.csv","test_structures.zip","labels.csv","id_mapping.csv"]:
+        p=private/name
+        with p.open("rb") as f: digest=hashlib.file_digest(f,"sha256").hexdigest()
+        private_files[name]={"bytes":p.stat().st_size,"sha256":digest}
+    (private/"manifest.json").write_text(json.dumps({"schema_version":2,"files":private_files},indent=2))
     for filename,values,kind in [("class_distribution.png",df.architecture_label.value_counts(),"bar"),("sequence_length_distribution.png",lengths,"hist")]:
         fig,ax=plt.subplots(figsize=(10,4));values.plot(kind=kind,ax=ax,color="#5156df")
         ax.set_title(filename.replace("_"," ").replace(".png",""));fig.tight_layout();fig.savefig(public/filename,dpi=150);plt.close(fig)
     print(json.dumps(stats,indent=2))
+def make_example(public):
+    """Give participants a tiny inference example copied from known training rows."""
+    train=pd.read_csv(public/"train.csv",dtype=str).head(3)
+    train[["id","sequence"]].to_csv(public/"example_input.csv",index=False)
+    train[["id","label"]].to_csv(public/"example_output.csv",index=False)
+    features=pd.read_csv(public/"train_features.csv").set_index("id")
+    features.loc[train.id].reset_index().to_csv(public/"example_features.csv",index=False)
+    with zipfile.ZipFile(public/"train_structures.zip") as source:
+        with zipfile.ZipFile(public/"example_structures.zip","w",compression=zipfile.ZIP_DEFLATED) as target:
+            for sample_id in train.id:
+                name=f"{sample_id}.npz"
+                target.writestr(name,source.read(name))
 def make_starter(public):
     # Public before the event: code/docs ONLY. Never add data-dependent files here.
     with zipfile.ZipFile(public/"baseline_code.zip","w",compression=zipfile.ZIP_DEFLATED) as archive:
@@ -104,7 +122,7 @@ def make_starter(public):
             archive.write(source,name)
     # Event-only allowlist: never package raw sources, private labels, or generator code.
     with zipfile.ZipFile(public/"starter_kit.zip","w",compression=zipfile.ZIP_DEFLATED) as archive:
-        for name in ["train.csv","test.csv","sample_submission.csv","train_features.csv","test_features.csv","validation_split.csv"]:
+        for name in ["train.csv","train_features.csv","validation_split.csv","example_input.csv","example_features.csv","example_output.csv","example_structures.zip"]:
             archive.write(public/name,name)
         for source,name in [(ROOT/"scripts/baseline.py","baseline.py"),(ROOT/"scripts/structure_features.py","structure_features.py"),(ROOT/"notebooks/baseline.ipynb","baseline.ipynb"),(ROOT/"docs/starter-guide.md","README.md"),(ROOT/"docs/structure-format.md","structure-format.md"),(ROOT/"notebooks/requirements.txt","requirements.txt")]:
             archive.write(source,name)

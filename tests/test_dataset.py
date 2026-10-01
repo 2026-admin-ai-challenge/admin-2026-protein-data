@@ -8,7 +8,7 @@ def test_real_cath_dataset_and_no_leakage(): verify()
 def test_actual_group_split_reproducible():
     mapping=pd.read_csv(ROOT/"data/private/id_mapping.csv",dtype=str)
     train=pd.read_csv(ROOT/"data/public/train.csv",dtype=str)
-    test=pd.read_csv(ROOT/"data/public/test.csv",dtype=str)
+    test=pd.read_csv(ROOT/"data/private/test.csv",dtype=str)
     labels=pd.read_csv(ROOT/"data/private/labels.csv",dtype=str)
     full=pd.concat([train,test.merge(labels[["id","label"]],on="id")],ignore_index=True)
     subset=full.merge(mapping,on="id").rename(columns={"label":"architecture_label"})

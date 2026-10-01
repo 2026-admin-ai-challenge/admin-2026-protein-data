@@ -2,10 +2,10 @@
 
 Task: given an observed protein-domain sequence and experimentally measured 3D coordinates, classify its CATH Architecture (`C.A`). This is structure classification, not folding prediction. Choose your own features and modeling approach.
 
-`train.csv`: `id,sequence,label`; `test.csv`: `id,sequence`. Read labels as strings.
+Participant files: `train.csv` has `id,sequence,label`; `example_input.csv` has `id,sequence`. Read labels as strings. Hidden `test.csv` is stored on the organizer server only.
 The sequence is the official CATH S40 **ATOM** domain sequence, not the full SEQRES sequence. Unobserved residues may be absent from that sequence. Samples whose ordered PDB ATOM residues do not exactly match it are excluded rather than heuristically aligned. Nonstandard residues are excluded; length 40–1200; at least 40 observed Cα atoms and 95% Cα coverage required.
 
-`train_structures.zip` / `test_structures.zip` contain one `<anonymous_id>.npz` per matching CSV row. There are no original domain identifiers, labels or raw headers. Load with `allow_pickle=False`.
+`train_structures.zip` contains one `<anonymous_id>.npz` per training CSV row. `example_structures.zip` holds three copies of known training structures for format checks. The server-only `test_structures.zip` has the same schema. There are no original domain identifiers, labels or raw headers in these files. Load with `allow_pickle=False`.
 
 | Key | Shape / type | Meaning |
 |---|---|---|
