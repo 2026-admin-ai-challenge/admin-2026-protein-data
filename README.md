@@ -35,4 +35,4 @@ python scripts/verify_dataset.py
 
 현재 파이프라인은 기존 **CSV 예측 제출 프로토타입**에 맞춰 `test.csv`와 `test_features.csv`를 참가자에게 배포합니다. 새 규칙인 **저장된 모델 제출 → 공개하지 않은 평가 입력으로 격리 추론 → 채점**에 맞게 배포 파일과 채점 연동을 수정해야 합니다. 지금 생성물을 그대로 새 대회의 최종 평가셋으로 배포하지 마세요.
 
-데이터 생성만으로 외부 자료 사용 여부를 증명할 수 없습니다. 새 대회에는 제공 데이터만 사용하도록 규정하고, 상위 팀의 학습 코드·모델을 재현 검증해야 합니다. 자세한 과제는 [개발 디렉팅 문서](https://github.com/2026-admin-ai-challenge/admin-2026-protein-structure-challenge/blob/main/ADMIN_%EB%8C%80%ED%9A%8C_%EA%B0%9C%EB%B0%9C_%EB%94%94%EB%A0%89%ED%8C%85.md)를 참조하세요.
+데이터 생성만으로 외부 자료 사용 여부를 증명할 수 없습니다. 새 대회에는 제공 학습 데이터만 사용하도록 규정하고, 상위 팀의 학습 코드·모델을 재현 검증해야 합니다. 팀별 업무와 운영진 문의사항은 [팀별 남은 과제와 문의사항](https://github.com/2026-admin-ai-challenge/admin-2026-protein-structure-challenge/blob/main/ADMIN_%ED%8C%80%EB%B3%84_%EB%82%A8%EC%9D%80_%EA%B3%BC%EC%A0%9C%EC%99%80_%EB%AC%B8%EC%9D%98%EC%82%AC%ED%95%AD.md)을 참조하세요.
