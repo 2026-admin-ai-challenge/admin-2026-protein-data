@@ -11,7 +11,4 @@ __pycache__/
 .DS_Store
 work/
 data/raw/
-data/public/*
-!data/public/.gitkeep
-data/private/*
-!data/private/.gitignore
+example_prediction.csv

@@ -1,0 +1,4 @@
+# Preserve generated dataset bytes so checksums match on every OS.
+data/public/** -text
+data/private/** -text
+data/DATASET_CHECKSUMS.json -text

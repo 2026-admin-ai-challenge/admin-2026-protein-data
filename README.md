@@ -1,15 +1,19 @@
 # ADMIN 2026 대회 데이터·베이스라인
 
-## 팀원용 데이터셋 다운로드
+## 팀원용 데이터셋 받기
 
-전처리가 완료된 데이터는 이 비공개 저장소의 [dataset-2026-10-02 Release](https://github.com/2026-admin-ai-challenge/admin-2026-protein-data/releases/tag/dataset-2026-10-02)에서 받습니다. `admin-dataset-2026-10-02.zip`을 저장소 루트에 압축 해제하면 `data/public/`과 `data/private/`에 배치됩니다. 팀원은 원본을 다시 다운로드하거나 전처리를 재실행할 필요 없이 검증과 베이스라인을 실행할 수 있습니다.
+전처리가 완료된 파일 19개를 이 비공개 저장소의 `data/public/`과 `data/private/`에 직접 포함합니다. 현재 데이터 업로드 브랜치는 `data/publish-dataset`입니다. PR 병합 전에는 이 브랜치를 clone하고, 병합 후에는 main을 clone하면 데이터를 함께 받습니다. 별도 Release 다운로드나 전처리 재실행은 필요하지 않습니다.
 
-- ZIP: 82,257,921 bytes / 생성 파일 19개
-- SHA-256: `a9a29937d11c1daed9ac243c4cc2585185fc9d3e6192f70347c4eaa25b9638b6`
-- 파일별 체크섬: ZIP 내부 `DATASET_CHECKSUMS.json`
+```bash
+git clone --branch data/publish-dataset https://github.com/2026-admin-ai-challenge/admin-2026-protein-data.git
+```
+
 - 학습 21,568개 / 평가 5,393개 / 20개 클래스
+- 학습 및 예제 데이터: `data/public/`
+- 운영진 평가 입력·정답·ID 매핑: `data/private/`
+- 파일별 체크섬: `data/DATASET_CHECKSUMS.json`
 
-다운로드에는 해당 비공개 저장소 접근 권한이 필요합니다. ZIP에는 운영진 평가 정답·매핑도 포함되어 있습니다. 참가자용 배포에는 `data/public/`만 사용합니다. 공식 원본 및 중간 캐시는 포함하지 않았습니다.
+참가자용 배포에는 `data/public/`만 사용합니다. 공식 원본과 중간 캐시, Python 가상환경은 Git에서 제외합니다. 기존 파일 검증은 `./run-preprocessing.ps1 -VerifyOnly`로 수행합니다. 새 데이터를 생성할 때는 기존 파일을 덮어쓰지 않고 `prepare_dataset.py --root <새 폴더>`를 사용합니다.
 
 ## Python 실행 환경 기준
 
@@ -19,7 +23,7 @@
 
 ## 이번 로컬 작업 및 Windows 실행
 
-GitHub Organization `2026-admin-ai-challenge`의 데이터 전용 저장소 `admin-2026-protein-data`에서 main 커밋 `ec11c626506e6bd40213fafb48182afbf3eaaa03`의 코드·문서·노트북·기존 테스트 24개 파일만 가져왔습니다. 현재 ChatGPT 프로젝트 폴더는 Git 저장소가 아니므로 작업 브랜치가 없으며, 데이터 파일은 별도 `admin-2026-protein-data/` 폴더에 저장했습니다. 웹사이트 저장소와 동기화된 `sources/` 파일은 수정하지 않았습니다.
+GitHub Organization `2026-admin-ai-challenge`의 데이터 전용 저장소 `admin-2026-protein-data`에서 main 커밋 `ec11c626506e6bd40213fafb48182afbf3eaaa03`의 코드·문서·노트북·기존 테스트 24개 파일만 가져왔습니다. 최초 작업 당시 ChatGPT 프로젝트 폴더는 Git 저장소가 아니었으며, 데이터 파일은 별도 `admin-2026-protein-data/` 폴더에 저장했습니다. 이후 해당 데이터 폴더를 Git 저장소에 연결하고 `data/publish-dataset` 브랜치에서 데이터 업로드를 진행합니다. 웹사이트 저장소와 동기화된 `sources/` 파일은 수정하지 않았습니다.
 
 원본 파일의 Git blob 해시는 모두 일치합니다. 출처 목록은 `IMPORT_MANIFEST.json`, 로컬 실행 안내는 `LOCAL_RUN.md`, 실제 실행 결과는 `RUN_RESULT.json`을 확인하세요. 아래 명령은 이 README가 있는 폴더에서 실행합니다.
 
@@ -85,7 +89,7 @@ python scripts/prepare_dataset.py    # 서열·3D 전처리 후 학습/평가 �
 python scripts/verify_dataset.py     # 결과 검증
 ```
 
-`data/raw/`에는 CATH 원본과 SHA-256 기록(`manifest.json`)이 저장됩니다. `data/public/`에는 참가자용 `train.csv`, `train_structures.zip`, `train_features.csv`, 검증 분할, 학습 샘플 3건에서 복사한 추론 예제가 생성됩니다. `data/private/`에는 서버 전용 `test.csv`, `test_structures.zip`, `test_features.csv`, `labels.csv`, 원본 ID 매핑과 체크섬 기록이 생성됩니다. **`private/` 전체를 참가자 다운로드나 추론 컨테이너에 제공하지 마세요.** 생성물은 모두 Git에서 제외합니다. `prepare_dataset.py`도 원본이 없으면 다운로드를 먼저 수행하므로 **한 명령으로 생성하려면 이 명령만 실행**해도 됩니다. 기존 정답 파일은 덮어쓰지 않습니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
+`data/raw/`에는 CATH 원본과 SHA-256 기록(`manifest.json`)이 저장됩니다. `data/public/`에는 참가자용 `train.csv`, `train_structures.zip`, `train_features.csv`, 검증 분할, 학습 샘플 3건에서 복사한 추론 예제가 생성됩니다. `data/private/`에는 서버 전용 `test.csv`, `test_structures.zip`, `test_features.csv`, `labels.csv`, 원본 ID 매핑과 체크섬 기록이 생성됩니다. **`private/` 전체를 참가자 다운로드나 추론 컨테이너에 제공하지 마세요.** 생성된 공개·운영진 데이터는 운영진 공유를 위해 이 비공개 Git 저장소에 포함하며, 원본과 중간 캐시는 제외합니다. `prepare_dataset.py`도 원본이 없으면 다운로드를 먼저 수행하므로 **한 명령으로 생성하려면 이 명령만 실행**해도 됩니다. 기존 정답 파일은 덮어쓰지 않습니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
 
 웹사이트 저장소와 같은 상위 디렉터리에 이 저장소를 두면 웹사이트의 Docker Compose가 `../admin-2026-protein-data/data`를 API에 읽기 전용으로 연결합니다. 다른 위치라면 웹사이트 `.env`의 `DATA_HOST_DIR`을 설정하세요.
 
