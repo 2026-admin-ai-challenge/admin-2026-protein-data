@@ -1,0 +1,122 @@
+{
+  "valid/predictions.csv": {
+    "code": null,
+    "ok": true
+  },
+  "valid/predictions_crlf.csv": {
+    "code": null,
+    "ok": true
+  },
+  "valid/predictions_single_class.csv": {
+    "code": "E506",
+    "ok": true
+  },
+  "valid/predictions_bom.csv": {
+    "code": "W903",
+    "ok": true
+  },
+  "invalid/empty.csv": {
+    "code": "E102",
+    "ok": false
+  },
+  "invalid/binary.csv": {
+    "code": "E106",
+    "ok": false
+  },
+  "invalid/unbalanced_quote.csv": {
+    "code": "E105",
+    "ok": false
+  },
+  "invalid/cp949.csv": {
+    "code": "E104",
+    "ok": false
+  },
+  "invalid/no_header.csv": {
+    "code": "E201",
+    "ok": false
+  },
+  "invalid/wrong_column_name.csv": {
+    "code": "E202",
+    "ok": false
+  },
+  "invalid/index_column.csv": {
+    "code": "E203",
+    "ok": false
+  },
+  "invalid/column_order.csv": {
+    "code": "E204",
+    "ok": false
+  },
+  "invalid/duplicate_column.csv": {
+    "code": "E205",
+    "ok": false
+  },
+  "invalid/field_count.csv": {
+    "code": "E301",
+    "ok": false
+  },
+  "invalid/row_count.csv": {
+    "code": "E302",
+    "ok": false
+  },
+  "invalid/blank_row.csv": {
+    "code": "E303",
+    "ok": false
+  },
+  "invalid/missing_id.csv": {
+    "code": "E401",
+    "ok": false
+  },
+  "invalid/duplicate_id.csv": {
+    "code": "E402",
+    "ok": false
+  },
+  "invalid/unknown_id.csv": {
+    "code": "E403",
+    "ok": false
+  },
+  "invalid/empty_id.csv": {
+    "code": "E404",
+    "ok": false
+  },
+  "invalid/unpadded_id.csv": {
+    "code": "E405",
+    "ok": false
+  },
+  "invalid/int_id.csv": {
+    "code": "E405",
+    "ok": false
+  },
+  "invalid/whitespace_id.csv": {
+    "code": "E406",
+    "ok": true
+  },
+  "invalid/train_ids.csv": {
+    "code": "E407",
+    "ok": false
+  },
+  "invalid/empty_label.csv": {
+    "code": "E501",
+    "ok": false
+  },
+  "invalid/unknown_label.csv": {
+    "code": "E502",
+    "ok": false
+  },
+  "invalid/label_case.csv": {
+    "code": "E503",
+    "ok": false
+  },
+  "invalid/label_index.csv": {
+    "code": "E504",
+    "ok": false
+  },
+  "invalid/label_nan.csv": {
+    "code": "E505",
+    "ok": false
+  },
+  "invalid/label_float_truncated.csv": {
+    "code": "E507",
+    "ok": false
+  }
+}
