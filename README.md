@@ -2,10 +2,10 @@
 
 ## 팀원용 데이터셋 받기
 
-전처리가 완료된 파일 19개를 이 비공개 저장소의 `data/public/`과 `data/private/`에 직접 포함합니다. 현재 데이터 업로드 브랜치는 `data/publish-dataset`입니다. PR 병합 전에는 이 브랜치를 clone하고, 병합 후에는 main을 clone하면 데이터를 함께 받습니다. 별도 Release 다운로드나 전처리 재실행은 필요하지 않습니다.
+전처리가 완료된 파일 19개를 이 비공개 저장소의 `data/public/`과 `data/private/`에 직접 포함합니다. `main`을 clone하면 데이터를 함께 받습니다. 별도 Release 다운로드나 전처리 재실행은 필요하지 않습니다. 대회 중에는 저장소를 운영진 전용 비공개로 유지하고, 대회 종료 후 평가 정답 공개 여부를 결정한 다음 저장소 공개를 검토합니다.
 
 ```bash
-git clone --branch data/publish-dataset https://github.com/2026-admin-ai-challenge/admin-2026-protein-data.git
+git clone https://github.com/2026-admin-ai-challenge/admin-2026-protein-data.git
 ```
 
 - 학습 21,568개 / 평가 5,393개 / 20개 클래스
