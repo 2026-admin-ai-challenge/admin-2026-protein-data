@@ -1,5 +1,60 @@
 # ADMIN 2026 대회 데이터·베이스라인
 
+## 팀원용 데이터셋 다운로드
+
+전처리가 완료된 데이터는 이 비공개 저장소의 [dataset-2026-10-02 Release](https://github.com/2026-admin-ai-challenge/admin-2026-protein-data/releases/tag/dataset-2026-10-02)에서 받습니다. `admin-dataset-2026-10-02.zip`을 저장소 루트에 압축 해제하면 `data/public/`과 `data/private/`에 배치됩니다. 팀원은 원본을 다시 다운로드하거나 전처리를 재실행할 필요 없이 검증과 베이스라인을 실행할 수 있습니다.
+
+- ZIP: 82,257,921 bytes / 생성 파일 19개
+- SHA-256: `a9a29937d11c1daed9ac243c4cc2585185fc9d3e6192f70347c4eaa25b9638b6`
+- 파일별 체크섬: ZIP 내부 `DATASET_CHECKSUMS.json`
+- 학습 21,568개 / 평가 5,393개 / 20개 클래스
+
+다운로드에는 해당 비공개 저장소 접근 권한이 필요합니다. ZIP에는 운영진 평가 정답·매핑도 포함되어 있습니다. 참가자용 배포에는 `data/public/`만 사용합니다. 공식 원본 및 중간 캐시는 포함하지 않았습니다.
+
+## Python 실행 환경 기준
+
+자주 사용하는 대회용 라이브러리도 [공통 패키지 목록](runtime/COMPETITION_PACKAGES.md)에 추가했습니다. 정확한 전체 의존성 버전은 `runtime/requirements-competition.lock.txt`로 고정합니다.
+
+공통 CPU 추론 환경 v1은 **CPython 3.12.14**와 현재 실행 검증을 마친 패키지 버전으로 고정합니다. 참가자의 학습·모델 저장·추론과 서버의 모델 로드가 같은 버전을 사용하도록 합니다. 정확한 패키지 목록은 `runtime/requirements-inference.lock.txt`, 설치·변경 규칙과 검증 범위는 [실행 환경 기준](runtime/README.md)을 확인하세요. 서버는 운영진의 공통 이미지를 사용하며 참가자 제출마다 패키지를 임의로 설치하지 않습니다. Linux 운영 이미지 검증과 digest 고정은 운영 적용 전 완료해야 합니다.
+
+## 이번 로컬 작업 및 Windows 실행
+
+GitHub Organization `2026-admin-ai-challenge`의 데이터 전용 저장소 `admin-2026-protein-data`에서 main 커밋 `ec11c626506e6bd40213fafb48182afbf3eaaa03`의 코드·문서·노트북·기존 테스트 24개 파일만 가져왔습니다. 현재 ChatGPT 프로젝트 폴더는 Git 저장소가 아니므로 작업 브랜치가 없으며, 데이터 파일은 별도 `admin-2026-protein-data/` 폴더에 저장했습니다. 웹사이트 저장소와 동기화된 `sources/` 파일은 수정하지 않았습니다.
+
+원본 파일의 Git blob 해시는 모두 일치합니다. 출처 목록은 `IMPORT_MANIFEST.json`, 로컬 실행 안내는 `LOCAL_RUN.md`, 실제 실행 결과는 `RUN_RESULT.json`을 확인하세요. 아래 명령은 이 README가 있는 폴더에서 실행합니다.
+
+```powershell
+# Python 3.12로 새 환경을 만드는 경우
+python -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements.txt
+
+# 새 데이터 생성 + 전체 검증 (출력 폴더가 비어 있어야 함)
+./run-preprocessing.ps1
+
+# 이미 생성된 데이터 검증만
+./run-preprocessing.ps1 -VerifyOnly
+
+# 베이스라인 학습 및 예제 추론
+./.venv/Scripts/python.exe scripts/baseline.py --output example_prediction.csv
+```
+
+이번 작업에서는 독립 `.venv`에 고정 의존성을 설치했고 공식 원본으로 실제 전처리를 완료했습니다. 총 26,961개·20개 클래스, 학습 21,568개·평가 5,393개를 생성했습니다. 전체 데이터의 체크섬·서열/구조 대응·분할 누수·배포 파일 검증을 포함한 기존 테스트 9개가 모두 통과했습니다(41.17초). 패키지 의존성 검사도 통과했습니다. 베이스라인 검증 Macro F1은 0.24083이며, 학습 데이터에서 가져온 예제 3건의 `example_prediction.csv` 생성까지 확인했습니다. 이 예제 점수는 최종 평가 점수가 아닙니다.
+
+`preprocessing.log`는 원본 다운로드·전처리, `verification.log`는 전체 테스트, `baseline.log`는 학습·추론 실행 기록입니다. 상세 결과는 `RUN_RESULT.json`을 확인하세요.
+
+| 파일 | 형식 및 역할 |
+|---|---|
+| `data/public/train.csv` | `id,sequence,label` 학습 데이터 |
+| `data/public/train_features.csv` | `id` + 서열 조성 20개·구조 통계 11개 |
+| `data/public/train_structures.zip` | 샘플별 NPZ 구조, 좌표 `pos`는 N×3 float32 |
+| `data/public/validation_split.csv` | `id,fold` 학습 내부 fit/validation 분할 |
+| `data/private/test.csv` | `id,sequence` 평가 입력 |
+| `data/private/labels.csv` | `id,label,partition` 운영진 평가 정답 |
+| `data/private/test_features.csv`, `test_structures.zip` | 평가 특징·구조 |
+| `data/raw/manifest.json` | 공식 원본 URL·SHA-256·크기 |
+
+현재 코드의 평가 입력 비공개 방식은 일반적인 참가자 `submission.csv` 제출 방식과 차이가 있습니다. 이번 작업은 저장소의 데이터 생성 정책을 유지했으며, 웹사이트 제출 방식 변경은 별도 연동 작업입니다.
+
 [CATH v4.4 S40](https://download.cathdb.info/cath/releases/all-releases/v4_4_0/)을 받아 단백질 도메인의 관측 서열과 Cα 좌표를 검증하고, Architecture 분류용 데이터·31개 기본 특징·Logistic Regression 베이스라인을 생성합니다. 웹사이트와 채점 API는 [별도 저장소](https://github.com/2026-admin-ai-challenge/admin-2026-protein-structure-challenge)에 있습니다.
 
 ## 내용

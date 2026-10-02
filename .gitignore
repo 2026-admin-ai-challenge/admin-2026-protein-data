@@ -1,4 +1,9 @@
 .venv/
+.venv-inference/
+.mpl-cache/
+release/
+*.log
+runtime/resolve-common.json
 __pycache__/
 *.pyc
 .pytest_cache/

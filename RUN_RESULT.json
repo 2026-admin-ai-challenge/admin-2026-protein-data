@@ -1,0 +1,40 @@
+{
+  "date_kst": "2026-10-02",
+  "repository": "2026-admin-ai-challenge/admin-2026-protein-data",
+  "source_commit": "ec11c626506e6bd40213fafb48182afbf3eaaa03",
+  "imported_files": 24,
+  "local_git_branch": null,
+  "source_blob_verification": "24 original files matched before README edit",
+  "modified_imported_files": ["README.md"],
+  "added_support_files": ["IMPORT_MANIFEST.json", "LOCAL_RUN.md", "run-preprocessing.ps1", "RUN_RESULT.json"],
+  "preprocessing": {
+    "exit_code": 0,
+    "source": "official CATH v4.4 S40",
+    "accepted_structures_before_class_selection": 27779,
+    "sequence_mismatch_exclusions": 6291,
+    "insufficient_ca_coverage_exclusions": 1,
+    "total": 26961,
+    "classes": 20,
+    "train": 21568,
+    "test": 5393,
+    "features": 31
+  },
+  "verification": {
+    "command": ".venv/Scripts/python.exe -m pytest -q",
+    "exit_code": 0,
+    "passed": 9,
+    "seconds": 41.17,
+    "pip_check": "No broken requirements found"
+  },
+  "baseline": {
+    "exit_code": 0,
+    "validation_macro_f1": 0.24083,
+    "example_predictions": 3,
+    "output": "example_prediction.csv",
+    "seconds": 3.8,
+    "note": "Example inputs are training rows, not hidden evaluation inputs."
+  },
+  "remote_changes": false,
+  "website_changes": false,
+  "synced_sources_changes": false
+}
