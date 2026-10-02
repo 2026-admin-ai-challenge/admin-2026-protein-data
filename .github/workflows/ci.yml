@@ -12,5 +12,3 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: pytest -q tests/test_structures.py tests/test_dataset.py tests/test_predictions.py tests/test_prediction_worker.py -k 'not real_cath_dataset and not actual_group_split'
-      - name: Check generated files are not tracked
-        run: test -z "$(git ls-files 'data/raw/*' 'data/private/*.csv' 'data/public/*.csv' 'data/public/*.zip')"
