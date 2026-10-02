@@ -1,0 +1,357 @@
+{
+  "status": "PASS",
+  "csv_tables": {
+    "data\\public\\example_features.csv": {
+      "rows": 3,
+      "columns": [
+        "id",
+        "aa_A",
+        "aa_C",
+        "aa_D",
+        "aa_E",
+        "aa_F",
+        "aa_G",
+        "aa_H",
+        "aa_I",
+        "aa_K",
+        "aa_L",
+        "aa_M",
+        "aa_N",
+        "aa_P",
+        "aa_Q",
+        "aa_R",
+        "aa_S",
+        "aa_T",
+        "aa_V",
+        "aa_W",
+        "aa_Y",
+        "log_length",
+        "ca_coverage",
+        "radius_gyration",
+        "shape_1",
+        "shape_2",
+        "shape_3",
+        "distance_mean",
+        "distance_std",
+        "distance_q25",
+        "distance_q50",
+        "distance_q75"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\public\\example_input.csv": {
+      "rows": 3,
+      "columns": [
+        "id",
+        "sequence"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\public\\example_output.csv": {
+      "rows": 3,
+      "columns": [
+        "id",
+        "label"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\public\\train.csv": {
+      "rows": 21568,
+      "columns": [
+        "id",
+        "sequence",
+        "label"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\public\\train_features.csv": {
+      "rows": 21568,
+      "columns": [
+        "id",
+        "aa_A",
+        "aa_C",
+        "aa_D",
+        "aa_E",
+        "aa_F",
+        "aa_G",
+        "aa_H",
+        "aa_I",
+        "aa_K",
+        "aa_L",
+        "aa_M",
+        "aa_N",
+        "aa_P",
+        "aa_Q",
+        "aa_R",
+        "aa_S",
+        "aa_T",
+        "aa_V",
+        "aa_W",
+        "aa_Y",
+        "log_length",
+        "ca_coverage",
+        "radius_gyration",
+        "shape_1",
+        "shape_2",
+        "shape_3",
+        "distance_mean",
+        "distance_std",
+        "distance_q25",
+        "distance_q50",
+        "distance_q75"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\public\\validation_split.csv": {
+      "rows": 21568,
+      "columns": [
+        "id",
+        "fold"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\private\\id_mapping.csv": {
+      "rows": 26961,
+      "columns": [
+        "id",
+        "domain_id",
+        "homologous_superfamily"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\private\\labels.csv": {
+      "rows": 5393,
+      "columns": [
+        "id",
+        "label",
+        "partition"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\private\\test.csv": {
+      "rows": 5393,
+      "columns": [
+        "id",
+        "sequence"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
+    "data\\private\\test_features.csv": {
+      "rows": 5393,
+      "columns": [
+        "id",
+        "aa_A",
+        "aa_C",
+        "aa_D",
+        "aa_E",
+        "aa_F",
+        "aa_G",
+        "aa_H",
+        "aa_I",
+        "aa_K",
+        "aa_L",
+        "aa_M",
+        "aa_N",
+        "aa_P",
+        "aa_Q",
+        "aa_R",
+        "aa_S",
+        "aa_T",
+        "aa_V",
+        "aa_W",
+        "aa_Y",
+        "log_length",
+        "ca_coverage",
+        "radius_gyration",
+        "shape_1",
+        "shape_2",
+        "shape_3",
+        "distance_mean",
+        "distance_std",
+        "distance_q25",
+        "distance_q50",
+        "distance_q75"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    }
+  },
+  "total": 26961,
+  "classes": [
+    {
+      "label": "1.10",
+      "train": 3252,
+      "test": 813,
+      "public": 244,
+      "private": 569
+    },
+    {
+      "label": "1.20",
+      "train": 1534,
+      "test": 383,
+      "public": 115,
+      "private": 268
+    },
+    {
+      "label": "1.25",
+      "train": 368,
+      "test": 92,
+      "public": 28,
+      "private": 64
+    },
+    {
+      "label": "2.10",
+      "train": 243,
+      "test": 61,
+      "public": 18,
+      "private": 43
+    },
+    {
+      "label": "2.160",
+      "train": 96,
+      "test": 24,
+      "public": 7,
+      "private": 17
+    },
+    {
+      "label": "2.170",
+      "train": 102,
+      "test": 26,
+      "public": 8,
+      "private": 18
+    },
+    {
+      "label": "2.20",
+      "train": 126,
+      "test": 32,
+      "public": 10,
+      "private": 22
+    },
+    {
+      "label": "2.30",
+      "train": 685,
+      "test": 171,
+      "public": 51,
+      "private": 120
+    },
+    {
+      "label": "2.40",
+      "train": 1006,
+      "test": 252,
+      "public": 76,
+      "private": 176
+    },
+    {
+      "label": "2.60",
+      "train": 2323,
+      "test": 581,
+      "public": 174,
+      "private": 407
+    },
+    {
+      "label": "2.70",
+      "train": 152,
+      "test": 38,
+      "public": 11,
+      "private": 27
+    },
+    {
+      "label": "3.10",
+      "train": 860,
+      "test": 215,
+      "public": 64,
+      "private": 151
+    },
+    {
+      "label": "3.20",
+      "train": 773,
+      "test": 193,
+      "public": 58,
+      "private": 135
+    },
+    {
+      "label": "3.30",
+      "train": 3338,
+      "test": 835,
+      "public": 250,
+      "private": 585
+    },
+    {
+      "label": "3.40",
+      "train": 4608,
+      "test": 1152,
+      "public": 346,
+      "private": 806
+    },
+    {
+      "label": "3.50",
+      "train": 229,
+      "test": 57,
+      "public": 17,
+      "private": 40
+    },
+    {
+      "label": "3.60",
+      "train": 212,
+      "test": 53,
+      "public": 16,
+      "private": 37
+    },
+    {
+      "label": "3.90",
+      "train": 1094,
+      "test": 273,
+      "public": 82,
+      "private": 191
+    },
+    {
+      "label": "4.10",
+      "train": 226,
+      "test": 57,
+      "public": 17,
+      "private": 40
+    },
+    {
+      "label": "6.10",
+      "train": 341,
+      "test": 85,
+      "public": 26,
+      "private": 59
+    }
+  ],
+  "split": {
+    "train": 21568,
+    "test": 5393,
+    "public": 1618,
+    "private": 3775
+  },
+  "length": {
+    "min": 40,
+    "max": 1146
+  },
+  "source_sequence_and_label_match": true,
+  "coordinates": {
+    "train": {
+      "residues": 3249055,
+      "missing_ca_residues": 204,
+      "structures_with_missing_ca": 198,
+      "minimum_ca_coverage": 0.96875
+    },
+    "test": {
+      "residues": 849059,
+      "missing_ca_residues": 56,
+      "structures_with_missing_ca": 56,
+      "minimum_ca_coverage": 0.9795918367346939
+    }
+  },
+  "note": "Missing C-alpha coordinates are allowed up to 5%, explicitly masked; all feature values and CSV fields must be complete."
+}
