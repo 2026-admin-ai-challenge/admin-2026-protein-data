@@ -1,7 +1,10 @@
 """Synthetic parser edge cases; real structures are audited by test_dataset.py."""
+import io
+import tarfile
 import numpy as np
+import pandas as pd
 import pytest
-from scripts.structure_dataset import parse_pdb
+from scripts.structure_dataset import parse_pdb, prepare_structures
 from scripts.structure_features import structure_features, FEATURE_NAMES
 
 
@@ -41,6 +44,42 @@ def test_sequence_mismatch_and_low_coverage_rejected():
 def test_altloc_occupancy_and_first_model():
     text=pdb()+'\n'+atom(1,alt='B',occupancy=.5,xyz=(999,0,0))+'\nENDMDL\n'+atom(1,residue='CYS')
     assert np.array_equal(parse_pdb(text,'A'*42)['pos'],parse_pdb(pdb(),'A'*42)['pos'])
+
+
+def test_same_insertion_code_on_successive_numbers_is_continuous():
+    text='\n'.join(atom(i,insertion='P') for i in range(1,43))
+    assert np.all(parse_pdb(text,'A'*42)['segment_index']==0)
+
+
+def test_altlocs_use_one_domain_wide_conformer():
+    lines=[atom(i) for i in range(1,43) if i not in (1,26)]
+    lines += [atom(1,alt='A',occupancy=.51,xyz=(3.8,0,0)),
+              atom(1,alt='B',occupancy=.49,xyz=(95,0,0)),
+              atom(26,alt='A',occupancy=.49,xyz=(98.8,0,0)),
+              atom(26,alt='B',occupancy=.51,xyz=(6.4,0,0))]
+    # Keep the ATOM residue order while putting both alternatives next to each other.
+    lines=lines[-4:-2]+lines[:24]+lines[-2:]+lines[24:]
+    g=parse_pdb('\n'.join(lines),'A'*42)
+    assert np.isclose(np.linalg.norm(g['pos'][0]-g['pos'][25]),95.0)
+
+
+def test_nonlocal_ca_overlap_is_rejected():
+    lines=[atom(i,xyz=(2*3.8,0,0) if i==27 else None) for i in range(1,43)]
+    with pytest.raises(ValueError,match='nonlocal_ca_clash'):
+        parse_pdb('\n'.join(lines),'A'*42)
+
+
+def test_reviewed_domain_is_excluded_before_publication(tmp_path):
+    raw=tmp_path/'raw'; raw.mkdir()
+    with tarfile.open(raw/'s40.pdb.tgz','w:gz') as archive:
+        for domain in ('reviewed','valid'):
+            content=pdb().encode('ascii')
+            info=tarfile.TarInfo(domain); info.size=len(content)
+            archive.addfile(info,io.BytesIO(content))
+    frame=pd.DataFrame({'domain_id':['reviewed','valid'],'sequence':['A'*42]*2})
+    clean,reasons=prepare_structures(raw,frame,{'reviewed'})
+    assert clean.domain_id.tolist()==['valid']
+    assert reasons['curated_source_quality']==1
 
 
 def test_features_invariant_to_rotation_translation_and_have_no_labels():

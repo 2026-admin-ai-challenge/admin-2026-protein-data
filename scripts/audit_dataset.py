@@ -14,6 +14,8 @@ def audit():
     tables = {}
     for directory in ['public', 'private']:
         for path in sorted((ROOT / 'data' / directory).glob('*.csv')):
+            if path.name == 'quality_exclusions.csv':
+                continue  # Source policy, not a generated participant/evaluation table.
             frame = pd.read_csv(path, dtype=str, keep_default_na=False)
             missing = {name: int(frame[name].str.strip().eq('').sum()) for name in frame}
             na_tokens = {name: int(frame[name].str.lower().isin(['nan','null','none','na','n/a']).sum()) for name in frame}

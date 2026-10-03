@@ -15,7 +15,7 @@ The sequence is the official CATH S40 **ATOM** domain sequence, not the full SEQ
 | pos | `[N,3]` float32 | Cα coordinates in Å, centered on observed Cα centroid |
 | ca_mask | `[N]` bool | Whether coordinates exist. False rows contain zero placeholders, not physical coordinates |
 
-Alternate Cα locations: highest occupancy, then blank/A/lexical altloc. Only the first model is used. Domain files can join discontinuous sequence segments; consecutive array rows need not be covalently bonded. Respect segment_index and ca_mask.
+Where the CATH domain PDB retains multiple Cα locations for a residue, regenerated data uses one preferred conformer across the domain, selected by total Cα occupancy (A wins ties). Blank locations are shared. Some CATH files already contain only one preselected alternate at each residue; missing alternatives cannot be recovered from that file. Structures with nonlocal Cα overlaps below 3.0 Å are excluded, including the reported mixed-location sample. The first model is used. Domain files can join discontinuous sequence segments; consecutive array rows need not be covalently bonded. Respect segment_index and ca_mask.
 
 ```python
 import io, zipfile, numpy as np

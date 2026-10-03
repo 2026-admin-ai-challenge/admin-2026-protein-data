@@ -1,6 +1,6 @@
 from pathlib import Path
 import pandas as pd
-from scripts.prepare_dataset import clean,read_fasta
+from scripts.prepare_dataset import clean,read_fasta,load_quality_exclusions
 from scripts.verify_dataset import verify,ROOT
 from scripts.split_dataset import group_split,public_private_split
 
@@ -25,3 +25,12 @@ def test_cleaning_excludes_ambiguous_duplicates_and_lengths():
     result=clean(seq,meta)
     assert len(result)==1 and result.iloc[0].architecture_label=="1.10"
     assert result.iloc[0].homologous_superfamily=="1.10.8.2"
+
+
+def test_curated_source_exclusions_match_pr4_review():
+    reviewed=pd.read_csv(ROOT/"docs/quality/day2-abnormal-samples.csv",dtype=str)
+    exclusions=pd.read_csv(ROOT/"data/private/quality_exclusions.csv",dtype=str)
+    bad=set(reviewed.loc[reviewed["판정"]=="오류 (원본 구조)","샘플 ID"])
+    assert len(bad)==len(exclusions)==21
+    assert set(exclusions.reference_train_id)==bad
+    assert load_quality_exclusions()==set(exclusions.domain_id)

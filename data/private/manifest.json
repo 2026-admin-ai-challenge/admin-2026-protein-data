@@ -2,24 +2,24 @@
   "schema_version": 2,
   "files": {
     "test.csv": {
-      "bytes": 924574,
-      "sha256": "ed9533b6ed7ed18f5ec0bd71002e204a7d58e3c98697b328a23cd039b69df6d9"
+      "bytes": 919512,
+      "sha256": "44ea3d473b5a278115baca00dad2f7eec3e8b39a5b313d7d23b3f873d167947a"
     },
     "test_features.csv": {
-      "bytes": 3109228,
-      "sha256": "e43011165c4e55970a0a1257ddee5ddf8124e488af18e9e832006f66c4b3d188"
+      "bytes": 3100080,
+      "sha256": "b559174698e448903264a625d7dfe43614351b2b5fa8711c48bc5ffff003ffb2"
     },
     "test_structures.zip": {
-      "bytes": 14565450,
-      "sha256": "fbb6838ee23ab13b11c55cc9cbd9e4f6cf9eca972a17642bad7eb75fc799ca15"
+      "bytes": 14569599,
+      "sha256": "2adfb228480223358c5a20211bf01fb4357ebafd23489c19f86aae1dc2ba0870"
     },
     "labels.csv": {
-      "bytes": 138670,
-      "sha256": "6a6dd45f878d70e22ade666b088bfdf36f442c92f94b07310ca995d2e00154b3"
+      "bytes": 133128,
+      "sha256": "8d901b6f09dc63ed41cca329007b4b2c01e89120a7e50f5191a724d0d256b4d6"
     },
     "id_mapping.csv": {
-      "bytes": 913773,
-      "sha256": "836fd96ea45122ba4200aa1c1c620bc4edac2ef73afcfd820311bf3a83c1d362"
+      "bytes": 885870,
+      "sha256": "4c569f128d46c190efd70afd83d40ae508c5af474efb0bd170bf754436540910"
     }
   }
 }

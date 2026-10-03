@@ -1,19 +1,22 @@
 """Audit every published structure, feature table and participant starter-kit member."""
 import io
+import json
 import zipfile
 import numpy as np
 import pandas as pd
 try:
-    from .structure_dataset import STRUCTURE_KEYS
+    from .structure_dataset import STRUCTURE_KEYS, has_nonlocal_ca_clash
     from .structure_features import AMINO_ACIDS, FEATURE_NAMES, structure_features
 except ImportError:
-    from structure_dataset import STRUCTURE_KEYS
+    from structure_dataset import STRUCTURE_KEYS, has_nonlocal_ca_clash
     from structure_features import AMINO_ACIDS, FEATURE_NAMES, structure_features
 
 
 def verify_structures(root):
     public = root / "data/public"
     train = pd.read_csv(public / "train.csv", dtype=str)
+    metadata = json.loads((public / "metadata.json").read_text())
+    min_nonlocal_distance = metadata["structure"].get("min_nonlocal_ca_distance")
     mapping = pd.read_csv(root / "data/private/id_mapping.csv", dtype=str)
     folds = pd.read_csv(public / "validation_split.csv", dtype=str)
     assert list(folds.columns) == ["id", "fold"] and folds.id.is_unique
@@ -44,6 +47,8 @@ def verify_structures(root):
                 assert mask.shape == (n,) and mask.dtype == bool and mask.sum() >= 40 and mask.mean() >= .95
                 assert np.isfinite(g['pos']).all() and np.all(g['pos'][~mask] == 0)
                 assert np.allclose(g['pos'][mask].mean(0), 0, atol=1e-3)
+                if min_nonlocal_distance is not None:
+                    assert not has_nonlocal_ca_clash(g['pos'], mask, min_nonlocal_distance)
                 segments = g['segment_index']
                 assert segments.shape == (n,) and segments[0] == 0
                 assert set(np.diff(segments).tolist()) <= {0, 1}
@@ -70,7 +75,6 @@ def verify_structures(root):
     code_only = {'baseline.py','structure_features.py','baseline.ipynb','README.md','structure-format.md','requirements.txt'}
     with zipfile.ZipFile(public / "baseline_code.zip") as archive:
         assert len(archive.namelist()) == len(code_only) and set(archive.namelist()) == code_only
-        import json
         notebook = json.loads(archive.read('baseline.ipynb'))
         assert all(not cell.get('outputs') for cell in notebook['cells'])
     print("PASS: all coordinate/sequence mappings, masks, segments, invariant features, H-group validation and starter allowlist")

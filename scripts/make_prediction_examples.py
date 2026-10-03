@@ -35,7 +35,7 @@ from scripts.prediction_validator.errors import SPECS  # noqa: E402
 
 DEV_CLASS_COUNT = 20
 DEV_EVAL_COUNT = 24
-"""개발용 픽스처 크기. 실제 평가셋은 5,393건이지만 예제는 눈으로 읽을 수 있어야 한다."""
+"""개발용 픽스처 크기. 실제 평가셋은 5,387건이지만 예제는 눈으로 읽을 수 있어야 한다."""
 
 DEV_CLASSES: list[str] = [
     # 'C.A' 형태만 맞춘 개발용 자리값. 확정 목록이 아니다.
