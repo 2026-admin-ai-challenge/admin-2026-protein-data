@@ -1,7 +1,7 @@
 {
   "status": "PASS",
   "csv_tables": {
-    "data\\public\\example_features.csv": {
+    "data/public/example_features.csv": {
       "rows": 3,
       "columns": [
         "id",
@@ -40,7 +40,7 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\public\\example_input.csv": {
+    "data/public/example_input.csv": {
       "rows": 3,
       "columns": [
         "id",
@@ -49,7 +49,7 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\public\\example_output.csv": {
+    "data/public/example_output.csv": {
       "rows": 3,
       "columns": [
         "id",
@@ -58,8 +58,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\public\\train.csv": {
-      "rows": 21568,
+    "data/public/train.csv": {
+      "rows": 21545,
       "columns": [
         "id",
         "sequence",
@@ -68,8 +68,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\public\\train_features.csv": {
-      "rows": 21568,
+    "data/public/train_features.csv": {
+      "rows": 21545,
       "columns": [
         "id",
         "aa_A",
@@ -107,8 +107,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\public\\validation_split.csv": {
-      "rows": 21568,
+    "data/public/validation_split.csv": {
+      "rows": 21545,
       "columns": [
         "id",
         "fold"
@@ -116,8 +116,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\private\\id_mapping.csv": {
-      "rows": 26961,
+    "data/private/id_mapping.csv": {
+      "rows": 26932,
       "columns": [
         "id",
         "domain_id",
@@ -126,8 +126,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\private\\labels.csv": {
-      "rows": 5393,
+    "data/private/labels.csv": {
+      "rows": 5387,
       "columns": [
         "id",
         "label",
@@ -136,8 +136,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\private\\test.csv": {
-      "rows": 5393,
+    "data/private/test.csv": {
+      "rows": 5387,
       "columns": [
         "id",
         "sequence"
@@ -145,8 +145,8 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
-    "data\\private\\test_features.csv": {
-      "rows": 5393,
+    "data/private/test_features.csv": {
+      "rows": 5387,
       "columns": [
         "id",
         "aa_A",
@@ -185,25 +185,25 @@
       "missing_tokens": 0
     }
   },
-  "total": 26961,
+  "total": 26932,
   "classes": [
     {
       "label": "1.10",
-      "train": 3252,
-      "test": 813,
+      "train": 3246,
+      "test": 812,
       "public": 244,
-      "private": 569
+      "private": 568
     },
     {
       "label": "1.20",
-      "train": 1534,
+      "train": 1532,
       "test": 383,
       "public": 115,
       "private": 268
     },
     {
       "label": "1.25",
-      "train": 368,
+      "train": 367,
       "test": 92,
       "public": 28,
       "private": 64
@@ -238,7 +238,7 @@
     },
     {
       "label": "2.30",
-      "train": 685,
+      "train": 684,
       "test": 171,
       "public": 51,
       "private": 120
@@ -246,16 +246,16 @@
     {
       "label": "2.40",
       "train": 1006,
-      "test": 252,
-      "public": 76,
+      "test": 251,
+      "public": 75,
       "private": 176
     },
     {
       "label": "2.60",
-      "train": 2323,
-      "test": 581,
+      "train": 2319,
+      "test": 580,
       "public": 174,
-      "private": 407
+      "private": 406
     },
     {
       "label": "2.70",
@@ -273,28 +273,28 @@
     },
     {
       "label": "3.20",
-      "train": 773,
+      "train": 772,
       "test": 193,
       "public": 58,
       "private": 135
     },
     {
       "label": "3.30",
-      "train": 3338,
-      "test": 835,
+      "train": 3336,
+      "test": 834,
       "public": 250,
-      "private": 585
+      "private": 584
     },
     {
       "label": "3.40",
-      "train": 4608,
-      "test": 1152,
-      "public": 346,
+      "train": 4605,
+      "test": 1151,
+      "public": 345,
       "private": 806
     },
     {
       "label": "3.50",
-      "train": 229,
+      "train": 228,
       "test": 57,
       "public": 17,
       "private": 40
@@ -308,7 +308,7 @@
     },
     {
       "label": "3.90",
-      "train": 1094,
+      "train": 1092,
       "test": 273,
       "public": 82,
       "private": 191
@@ -316,9 +316,9 @@
     {
       "label": "4.10",
       "train": 226,
-      "test": 57,
+      "test": 56,
       "public": 17,
-      "private": 40
+      "private": 39
     },
     {
       "label": "6.10",
@@ -329,10 +329,10 @@
     }
   ],
   "split": {
-    "train": 21568,
-    "test": 5393,
-    "public": 1618,
-    "private": 3775
+    "train": 21545,
+    "test": 5387,
+    "public": 1616,
+    "private": 3771
   },
   "length": {
     "min": 40,
@@ -341,15 +341,15 @@
   "source_sequence_and_label_match": true,
   "coordinates": {
     "train": {
-      "residues": 3249055,
-      "missing_ca_residues": 204,
-      "structures_with_missing_ca": 198,
+      "residues": 3243934,
+      "missing_ca_residues": 201,
+      "structures_with_missing_ca": 195,
       "minimum_ca_coverage": 0.96875
     },
     "test": {
-      "residues": 849059,
-      "missing_ca_residues": 56,
-      "structures_with_missing_ca": 56,
+      "residues": 849469,
+      "missing_ca_residues": 58,
+      "structures_with_missing_ca": 58,
       "minimum_ca_coverage": 0.9795918367346939
     }
   },

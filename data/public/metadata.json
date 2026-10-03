@@ -3,11 +3,17 @@
   "input": "sequence + observed C-alpha coordinates",
   "structure": {
     "min_ca_coverage": 0.95,
+    "min_nonlocal_ca_distance": 3.0,
     "residue_sequence": "ATOM domain sequence; exact PDB residue match",
+    "curated_source_exclusions": 21,
+    "curated_exclusions_sha256": "e7711757bae4be9228939379f35aeb66dd71b49af7ebddd68e00f88e8f929dea",
     "exclusions": {
       "atom_sequence_mismatch": 6291,
+      "curated_source_quality": 21,
+      "nonlocal_ca_clash": 8,
+      "incompatible_altlocs": 1,
       "insufficient_ca_coverage": 1,
-      "missing_or_rejected_structure": 6292
+      "missing_or_rejected_structure": 6322
     }
   },
   "source": "CATH",
@@ -43,28 +49,28 @@
     "public_test": 0.3,
     "private_test": 0.7
   },
-  "actual_train_fraction": 0.7999703275101072,
+  "actual_train_fraction": 0.7999777216693895,
   "stats": {
-    "total": 26961,
+    "total": 26932,
     "classes": 20,
-    "train": 21568,
-    "test": 5393,
+    "train": 21545,
+    "test": 5387,
     "samples_per_class": {
-      "3.40": 5760,
-      "3.30": 4173,
-      "1.10": 4065,
-      "2.60": 2904,
-      "1.20": 1917,
-      "3.90": 1367,
-      "2.40": 1258,
+      "3.40": 5756,
+      "3.30": 4170,
+      "1.10": 4058,
+      "2.60": 2899,
+      "1.20": 1915,
+      "3.90": 1365,
+      "2.40": 1257,
       "3.10": 1075,
-      "3.20": 966,
-      "2.30": 856,
-      "1.25": 460,
+      "3.20": 965,
+      "2.30": 855,
+      "1.25": 459,
       "6.10": 426,
       "2.10": 304,
-      "3.50": 286,
-      "4.10": 283,
+      "3.50": 285,
+      "4.10": 282,
       "3.60": 265,
       "2.70": 190,
       "2.20": 158,
@@ -72,7 +78,7 @@
       "2.160": 120
     },
     "sequence_length": {
-      "mean": 152.0015578057194,
+      "mean": 151.99030892618447,
       "median": 129.0,
       "min": 40,
       "max": 1146
@@ -110,32 +116,32 @@
     "2.102": "fewer than 50 cleaned samples",
     "3.70": "fewer than 50 cleaned samples",
     "3.100": "fewer than 50 cleaned samples",
-    "3.65": "fewer than 50 cleaned samples",
     "3.15": "fewer than 50 cleaned samples",
-    "2.50": "fewer than 50 cleaned samples",
-    "3.75": "fewer than 50 cleaned samples",
+    "3.65": "fewer than 50 cleaned samples",
     "2.90": "fewer than 50 cleaned samples",
-    "2.150": "fewer than 50 cleaned samples",
+    "3.75": "fewer than 50 cleaned samples",
+    "2.50": "fewer than 50 cleaned samples",
     "2.140": "fewer than 50 cleaned samples",
+    "2.150": "fewer than 50 cleaned samples",
     "2.110": "fewer than 50 cleaned samples",
     "1.40": "fewer than 50 cleaned samples",
     "2.105": "fewer than 50 cleaned samples",
     "2.180": "fewer than 50 cleaned samples"
   },
-  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.",
+  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and 21 curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.",
   "files": {
     "train.csv": {
-      "rows": 21568,
+      "rows": 21545,
       "columns": [
         "id",
         "sequence",
         "label"
       ],
-      "bytes": 3680632,
-      "sha256": "b80a7363ca170aafddc5865ea8448aeb2e8d0ffbffefbe9aeff36c42b3496503"
+      "bytes": 3653505,
+      "sha256": "803013d88605fee45971a1b3a75e684713bbefe1a427677bdcc4de4f67723a18"
     },
     "train_features.csv": {
-      "rows": 21568,
+      "rows": 21545,
       "columns": [
         "id",
         "aa_A",
@@ -170,17 +176,17 @@
         "distance_q50",
         "distance_q75"
       ],
-      "bytes": 12432377,
-      "sha256": "07d280f3b5658666be52c68c3165610d1c5287d4458bbb0560f11c6c2c296b3e"
+      "bytes": 12398098,
+      "sha256": "8cd88c3d3f4fd6b65285cf05326a77c012b53491c8f2e290a469d86ecb962d2f"
     },
     "validation_split.csv": {
-      "rows": 21568,
+      "rows": 21545,
       "columns": [
         "id",
         "fold"
       ],
-      "bytes": 418445,
-      "sha256": "add17cbbc3b85a750177ae2da704da55e57b85efc9dc37799a7e6c475cee1647"
+      "bytes": 396422,
+      "sha256": "b47ad2d3707eef546fa18ed3c84bb518ddf768aba9d290eea31f2a14425115eb"
     },
     "example_input.csv": {
       "rows": 3,
@@ -188,8 +194,8 @@
         "id",
         "sequence"
       ],
-      "bytes": 543,
-      "sha256": "bd4741a74488d4fad5580a7e25a426385537fc6aa42fc6af2168893054ed4207"
+      "bytes": 567,
+      "sha256": "5f8a0e672ecacd11d97652989a7f4d38a26c07453e5687f1e4373c17b00e1de5"
     },
     "example_features.csv": {
       "rows": 3,
@@ -227,8 +233,8 @@
         "distance_q50",
         "distance_q75"
       ],
-      "bytes": 1931,
-      "sha256": "02a3a01895f2f5cc85b67775990d1607787436f098239704c5072ac46d514e88"
+      "bytes": 1949,
+      "sha256": "e12b9fe1436c2f188c8fd32baa3f487fb851d0c4a9b9499f3c5b2dc6ee9883dd"
     },
     "example_output.csv": {
       "rows": 3,
@@ -236,27 +242,27 @@
         "id",
         "label"
       ],
-      "bytes": 67,
-      "sha256": "bf6ae2daa43006df933ba494060fed4312d4284f1967abee3138eb1bed9da371"
+      "bytes": 63,
+      "sha256": "07629f300ce5c249f02a994aaf85895104e07e907fa950486c4dcac764080694"
     },
     "train_structures.zip": {
-      "bytes": 56316237,
-      "sha256": "f5b2f6b73c00e66bc04421d260413b53ea90e5200edc28dd12e16eff759f68b2",
+      "bytes": 56237891,
+      "sha256": "7f172136a47d252bc03fde26aca6f9dcd9451bfb623526caa8d668f1d5d2dbed",
       "description": "Participant archive; anonymized data only"
     },
     "example_structures.zip": {
-      "bytes": 8250,
-      "sha256": "cbd0f63ce861bc57b2e26f726b4bc1043003873236c19a19a7b8728edcf8f115",
+      "bytes": 8620,
+      "sha256": "347b1b5ced368a0b636bfab59c79fb007fb1cf754482dd4526c5230b2f264fb0",
       "description": "Participant archive; anonymized data only"
     },
     "starter_kit.zip": {
-      "bytes": 5803454,
-      "sha256": "5886bcc32e245deddae19ce6655cf7559d6aaf395ea915bbbbddcfe1827c2b6d",
+      "bytes": 5792999,
+      "sha256": "f51a102b81b06a135f23a64a1b697ab191d82a3c6c61e53318b33217a48dd12b",
       "description": "Participant archive; anonymized data only"
     },
     "baseline_code.zip": {
-      "bytes": 7512,
-      "sha256": "eb1507cc83fa5c78044446921ae35be98697189d30151e131783ff7d6c7726a3",
+      "bytes": 7674,
+      "sha256": "1518907ba03ff62a6bf29c9052917ec7298c587d8666b7a87b185489859e7eb8",
       "description": "Participant archive; anonymized data only"
     }
   }

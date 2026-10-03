@@ -1,6 +1,6 @@
 # 예측 출력 계약 초안 (Day 1 산출물)
 
-담당: 윤성 · 기준일 2026-10-02 · 계약 버전 `0.2.0-draft`
+담당: 윤성 · 최초 기준일 2026-10-02 · 데이터 건수 갱신 2026-10-04 · 계약 버전 `0.2.0-draft`
 
 이 문서는 **참가자 모델의 추론 결과 파일**이 지켜야 하는 형식과, 그것을 어기는
 모든 경우를 정한다. 기계가 읽는 값은 `contract/prediction_contract.json` 에 있고
@@ -15,11 +15,11 @@
 | 항목 | 확정값 | 근거 |
 | --- | --- | --- |
 | 출력 컬럼 | `id,label` (이 순서) | `scripts/baseline.py` — `pd.DataFrame({"id": ..., "label": ...}).to_csv(output, index=False)` |
-| 평가 ID 형식 | `TEST_000001` … `TEST_005393` (`TEST_%06d`) | `scripts/prepare_dataset.py:70` |
-| 학습 ID 형식 | `TRAIN_000001` … `TRAIN_021568` (`TRAIN_%06d`) | `scripts/prepare_dataset.py:69` |
+| 평가 ID 형식 | `TEST_000001` … `TEST_005387` (`TEST_%06d`) | `scripts/prepare_dataset.py` |
+| 학습 ID 형식 | `TRAIN_000001` … `TRAIN_021545` (`TRAIN_%06d`) | `scripts/prepare_dataset.py` |
 | 라벨 의미 | CATH Architecture `C.A` 문자열 | `docs/starter-guide.md`, `prepare_dataset.py:40` — `df["class"] + "." + df.architecture` |
 | 라벨 개수 | 20개 | `docs/dataset.md` |
-| 평가 건수 | 5,393 (Public 1,618 / Private 3,775) | `docs/dataset.md` |
+| 평가 건수 | 5,387 (Public 1,616 / Private 3,771) | `docs/dataset.md` |
 | 점수 | 허용 클래스 전체 대상 Macro F1, `zero_division=0` | `scripts/baseline.py` 의 `f1_score(..., average="macro")` |
 | 분할 | 클래스별 Public 30 / Private 70 seeded shuffle | `docs/dataset.md` |
 
@@ -30,7 +30,7 @@ id,label
 TEST_000001,3.30
 TEST_000002,1.10
 ...
-TEST_005393,2.40
+TEST_005387,2.40
 ```
 
 - UTF-8 텍스트 CSV. 쉼표 구분. 헤더 필수.
@@ -39,7 +39,7 @@ TEST_005393,2.40
 - 평가 입력의 모든 ID가 **정확히 한 번씩** 있어야 한다. 누락·중복·초과 모두 거절.
 - 라벨은 허용 클래스 20개 문자열 중 하나. 빈 값·결측 표현 금지.
 - 줄바꿈은 LF/CRLF 모두 허용. BOM 은 경고만 내고 통과시킨다.
-- 파일 크기 상한은 임시로 10 MiB. 5,393행 × 약 18바이트면 100 KiB 미만이다.
+- 파일 크기 상한은 임시로 10 MiB. 5,387행 × 약 18바이트면 100 KiB 미만이다.
 
 ## 3. 이 데이터셋에서 특히 조심할 실패 두 가지
 
@@ -77,7 +77,7 @@ TEST_005393,2.40
 
 **첫 오류에서 멈추지 않는다.** 팀당 제출이 대회 전체 10회뿐이다. 한 번
 실패할 때마다 고칠 거리를 최대한 돌려줘야 한다. 모든 행을 끝까지 보고
-코드별로 모아서 보고하되, 예시는 코드당 20건으로 제한해 5,393행짜리
+코드별로 모아서 보고하되, 예시는 코드당 20건으로 제한해 5,387행짜리
 응답이 되지 않게 한다.
 
 **숨김 평가 ID를 참가자에게 흘리지 않는다.** `docs/dataset.md` 가 적어 둔 대로
