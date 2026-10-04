@@ -1,0 +1,7 @@
+model,macro_f1,weighted_f1,accuracy,balanced_accuracy,macro_precision,macro_recall
+graph_ensemble,0.50997,0.62798,0.63269,0.51673,0.53252,0.51673
+graph_gnn,0.45751,0.57254,0.56443,0.52622,0.43857,0.52622
+graph_graph_blend_0.5,0.50072,0.62406,0.62874,0.49459,0.53833,0.49459
+graph_graph_boosting,0.49601,0.62039,0.61992,0.49061,0.52243,0.49061
+graph_graph_extra_trees,0.46173,0.58773,0.61133,0.45847,0.50673,0.45847
+graph_provided_logistic,0.23035,0.29469,0.26863,0.31808,0.2309,0.31808
