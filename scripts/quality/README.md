@@ -36,6 +36,49 @@ python scripts/quality/day2_extended_verify.py . <작업 폴더>/pdb <작업 폴
 
 `day2_shape_verify.py`는 Day 1의 `c12_result.json`이 있어야 한다. `day2_extended_verify.py`가 대조하는 원본 PDB 일부는 `fetch_pdb.py`에 `rest.json`을 넘겨 받는다.
 
+## Day 3: 수정 확인 · 평가 데이터 · 추가 점검
+
+`docs/quality/day3-*.md`의 결과를 다시 계산한다. 데이터 버전 `797d114`(PR #5) 기준.
+
+1차 문제 추적 (옛 ID → 원본 domain → 새 ID). 먼저 위 Day 1 C-12 단계를 학습은 `<작업 폴더>`, 평가는 `<작업 폴더>/test`에 돌려 둔다:
+
+```bash
+python scripts/quality/day3_track.py . 44e28e4 <작업 폴더>
+```
+
+끊긴 지점이 실제로 결합된 이웃인지 원본에서 측정 (D-01, N-01):
+
+```bash
+python scripts/quality/day3_boundary.py . <작업 폴더>                                   # D-01 삽입 코드 경계
+python scripts/quality/day3_boundary.py . <작업 폴더> "연속인데 끊김 (설명 불가)"          # N-01
+```
+
+평가 데이터에 Day 1·2 전 항목 실행. 평가 파일을 학습 파일 자리에 놓은 임시 폴더를 만들어, 위 Day 1·2 명령의 `.` 자리에 넘긴다:
+
+```bash
+python scripts/quality/day3_test_view.py . <평가용 폴더>
+python scripts/quality/day1_check.py <평가용 폴더>
+python scripts/quality/day2_hits.py <평가용 폴더> <작업 폴더>/test
+```
+
+이웃 간격이 정상 범위 밖인 쌍의 모양(altloc) 섞임 판정 (P-30 잔여):
+
+```bash
+python scripts/quality/day3_altloc_mix.py flags . <작업 폴더>/mix test
+python scripts/quality/fetch_pdb.py <작업 폴더>/mix <작업 폴더>/mix/adjacent_flags.json
+python scripts/quality/day3_altloc_mix.py check . <작업 폴더>/mix test
+```
+
+50% 기준 아래 알라닌 부분 채움 후보:
+
+```bash
+python scripts/quality/day3_ala_runs.py .
+```
+
+2026-10-04 `797d114` 데이터로 실행해 보고서 수치(D-01 학습 31곳·평가 7곳, 모양 섞임 11곳·8개 구조, A 8개 이상 연속 학습 3·평가 2 등)가 같게 나오는 것을 확인했다.
+
+`day2_extended_verify.py`는 1차 데이터의 ID가 코드에 들어 있어 `797d114` 데이터에서는 실행되지 않는다.
+
 ## 주의
 
 - `c12_suspects.py`, `day2_hits.py`는 원본 domain 이름을 쓰기 위해 `data/private/id_mapping.csv`를 읽는다. 출력 JSON에 원본 domain 이름이 들어가므로 작업 폴더는 공유하지 않는다.
