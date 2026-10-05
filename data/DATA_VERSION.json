@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "source": "CATH v4.4 S40",
+  "seed": 42,
+  "counts": {
+    "train": 21545,
+    "test": 5387,
+    "public": 1616,
+    "private": 3771,
+    "classes": 20
+  },
+  "metadata_sha256": "4157002173716bdefa5bce090881423a719dd7fd77467626647dacaabfa91b67",
+  "checksums_sha256": "759d21e870d6860bea50fe39e181196ea6e76516cb5be282f040661232b655e3"
+}
