@@ -2,6 +2,7 @@
 data/public/** -text
 data/private/** -text
 data/DATASET_CHECKSUMS.json -text
+data/DATA_VERSION.json -text
 
 # Prediction fixtures encode exact malformed inputs (CRLF, BOM, NUL, cp949).
 # Line-ending conversion would change what they test.

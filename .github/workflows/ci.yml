@@ -12,3 +12,14 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: pytest -q tests/test_structures.py tests/test_dataset.py tests/test_predictions.py tests/test_prediction_worker.py -k 'not real_cath_dataset and not actual_group_split'
+  data-linux:
+    # Full dataset verification on Linux x86_64 with the competition Python.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12.14'
+      - run: pip install -r requirements.txt
+      - run: python scripts/verify_dataset.py
+      - run: pytest -q
