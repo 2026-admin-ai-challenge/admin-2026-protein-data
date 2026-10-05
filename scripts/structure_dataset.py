@@ -27,7 +27,7 @@ def consecutive(a, b):
     chain_b, number_b, insertion_b = b
     if chain_a != chain_b:
         return False
-    return ((number_b == number_a + 1 and insertion_b == insertion_a) or
+    return ((number_b == number_a + 1) or
             (number_b == number_a and insertion_b and
              ord(insertion_b) == (ord(insertion_a) + 1 if insertion_a else ord("A"))))
 

@@ -44,11 +44,13 @@ def clean(seqs, metadata):
 def load_quality_exclusions(path=ROOT / "data/private/quality_exclusions.csv"):
     """Load manually reviewed source-domain exclusions from the organizer file."""
     exclusions = pd.read_csv(path, dtype=str)
-    if list(exclusions.columns) != ["domain_id", "reference_train_id", "reason"]:
+    if list(exclusions.columns) != ["domain_id", "reference_sample_id", "reason"]:
         raise ValueError("Invalid quality exclusion columns")
-    if exclusions.isna().any().any() or not exclusions.domain_id.is_unique:
+    if (exclusions.isna().any().any() or not exclusions.domain_id.is_unique
+            or not exclusions.reference_sample_id.is_unique
+            or not exclusions.reference_sample_id.str.fullmatch(r"(?:TRAIN|TEST)_\d{6}").all()):
         raise ValueError("Invalid or duplicate quality exclusions")
-    if set(exclusions.reason) != {"A-02", "A-05", "A-06"}:
+    if not set(exclusions.reason) <= {"A-02", "A-05", "A-06", "X-01", "X-02", "P-30"}:
         raise ValueError("Unexpected quality exclusion reason")
     return set(exclusions.domain_id)
 
@@ -96,7 +98,7 @@ def prepare(root=ROOT):
     make_starter(public)
     lengths=df.sequence_length
     stats={"total":len(df),"classes":len(selected),"train":len(train),"test":len(test),"samples_per_class":{k:int(v) for k,v in df.architecture_label.value_counts().items()},"sequence_length":{"mean":float(lengths.mean()),"median":float(lengths.median()),"min":int(lengths.min()),"max":int(lengths.max())}}
-    result={"schema_version":2,"input":"sequence + observed C-alpha coordinates","structure":{"min_ca_coverage":0.95,"min_nonlocal_ca_distance":3.0,"residue_sequence":"ATOM domain sequence; exact PDB residue match","curated_source_exclusions":len(curated_exclusions),"curated_exclusions_sha256":hashlib.sha256((ROOT/"data/private/quality_exclusions.csv").read_bytes()).hexdigest(),"exclusions":structure_exclusions},"source":"CATH","version":"4.4","subset":"S40","target":"architecture","seed":SEED,"labels":sorted(selected),"split":{"train":.8,"test":.2,"public_test":.3,"private_test":.7},"actual_train_fraction":len(train)/len(df),"stats":stats,"sources":manifest,"excluded_architectures":rejected,"policy":"Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and 21 curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.","files":{}}
+    result={"schema_version":2,"input":"sequence + observed C-alpha coordinates","structure":{"min_ca_coverage":0.95,"min_nonlocal_ca_distance":3.0,"residue_sequence":"ATOM domain sequence; exact PDB residue match","curated_source_exclusions":len(curated_exclusions),"curated_exclusions_sha256":hashlib.sha256((ROOT/"data/private/quality_exclusions.csv").read_bytes()).hexdigest(),"exclusions":structure_exclusions},"source":"CATH","version":"4.4","subset":"S40","target":"architecture","seed":SEED,"labels":sorted(selected),"split":{"train":.8,"test":.2,"public_test":.3,"private_test":.7},"actual_train_fraction":len(train)/len(df),"stats":stats,"sources":manifest,"excluded_architectures":rejected,"policy":f"Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and {len(curated_exclusions)} curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.","files":{}}
     for name in ["train.csv","train_features.csv","validation_split.csv","example_input.csv","example_features.csv","example_output.csv"]:
         p=public/name; frame=pd.read_csv(p,dtype=str)
         result["files"][name]={"rows":len(frame),"columns":list(frame.columns),"bytes":p.stat().st_size,"sha256":hashlib.sha256(p.read_bytes()).hexdigest()}

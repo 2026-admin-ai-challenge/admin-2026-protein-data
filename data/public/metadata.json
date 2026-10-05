@@ -5,15 +5,15 @@
     "min_ca_coverage": 0.95,
     "min_nonlocal_ca_distance": 3.0,
     "residue_sequence": "ATOM domain sequence; exact PDB residue match",
-    "curated_source_exclusions": 21,
-    "curated_exclusions_sha256": "e7711757bae4be9228939379f35aeb66dd71b49af7ebddd68e00f88e8f929dea",
+    "curated_source_exclusions": 33,
+    "curated_exclusions_sha256": "2d575e6964a3e31b9641afbffa6e5923cc6ffcc750fedae24d8c2a384b6f768c",
     "exclusions": {
       "atom_sequence_mismatch": 6291,
-      "curated_source_quality": 21,
+      "curated_source_quality": 33,
       "nonlocal_ca_clash": 8,
       "incompatible_altlocs": 1,
       "insufficient_ca_coverage": 1,
-      "missing_or_rejected_structure": 6322
+      "missing_or_rejected_structure": 6334
     }
   },
   "source": "CATH",
@@ -49,36 +49,36 @@
     "public_test": 0.3,
     "private_test": 0.7
   },
-  "actual_train_fraction": 0.7999777216693895,
+  "actual_train_fraction": 0.8,
   "stats": {
-    "total": 26932,
+    "total": 26920,
     "classes": 20,
-    "train": 21545,
-    "test": 5387,
+    "train": 21536,
+    "test": 5384,
     "samples_per_class": {
-      "3.40": 5756,
-      "3.30": 4170,
+      "3.40": 5754,
+      "3.30": 4166,
       "1.10": 4058,
-      "2.60": 2899,
+      "2.60": 2897,
       "1.20": 1915,
       "3.90": 1365,
-      "2.40": 1257,
+      "2.40": 1256,
       "3.10": 1075,
-      "3.20": 965,
+      "3.20": 964,
       "2.30": 855,
-      "1.25": 459,
+      "1.25": 458,
       "6.10": 426,
       "2.10": 304,
       "3.50": 285,
       "4.10": 282,
       "3.60": 265,
       "2.70": 190,
-      "2.20": 158,
+      "2.20": 157,
       "2.170": 128,
       "2.160": 120
     },
     "sequence_length": {
-      "mean": 151.99030892618447,
+      "mean": 151.99680534918275,
       "median": 129.0,
       "min": 40,
       "max": 1146
@@ -128,20 +128,20 @@
     "2.105": "fewer than 50 cleaned samples",
     "2.180": "fewer than 50 cleaned samples"
   },
-  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and 21 curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.",
+  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and 33 curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.",
   "files": {
     "train.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "sequence",
         "label"
       ],
-      "bytes": 3653505,
-      "sha256": "803013d88605fee45971a1b3a75e684713bbefe1a427677bdcc4de4f67723a18"
+      "bytes": 3635587,
+      "sha256": "41f2a960edfc51f28e8e9a54b451811875d95edb721faf7630cd4574e5a6fc76"
     },
     "train_features.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "aa_A",
@@ -176,17 +176,17 @@
         "distance_q50",
         "distance_q75"
       ],
-      "bytes": 12398098,
-      "sha256": "8cd88c3d3f4fd6b65285cf05326a77c012b53491c8f2e290a469d86ecb962d2f"
+      "bytes": 12382499,
+      "sha256": "371bdde2eaca5f43af92d36c850282634ed583da5082a904955298a8f66b211b"
     },
     "validation_split.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "fold"
       ],
-      "bytes": 396422,
-      "sha256": "b47ad2d3707eef546fa18ed3c84bb518ddf768aba9d290eea31f2a14425115eb"
+      "bytes": 396269,
+      "sha256": "94f8d66fb9a8aefc1ae2f922ef68849534a634263d25e0537135ea11c78a325a"
     },
     "example_input.csv": {
       "rows": 3,
@@ -194,8 +194,8 @@
         "id",
         "sequence"
       ],
-      "bytes": 567,
-      "sha256": "5f8a0e672ecacd11d97652989a7f4d38a26c07453e5687f1e4373c17b00e1de5"
+      "bytes": 488,
+      "sha256": "04e7ede26cf554c0c0fe64d58fea00bb03f2f8f1d467468813881f30663e9cd6"
     },
     "example_features.csv": {
       "rows": 3,
@@ -233,8 +233,8 @@
         "distance_q50",
         "distance_q75"
       ],
-      "bytes": 1949,
-      "sha256": "e12b9fe1436c2f188c8fd32baa3f487fb851d0c4a9b9499f3c5b2dc6ee9883dd"
+      "bytes": 1833,
+      "sha256": "08d4546d3bbc0c46db48bd89324a048c5dd6dff5184031ea895de1e7783d41e8"
     },
     "example_output.csv": {
       "rows": 3,
@@ -243,26 +243,26 @@
         "label"
       ],
       "bytes": 63,
-      "sha256": "07629f300ce5c249f02a994aaf85895104e07e907fa950486c4dcac764080694"
+      "sha256": "17c263babb9149588cce94b7a0fd3198a9ea5cb9cb14edbb0a50f9e19efc44e2"
     },
     "train_structures.zip": {
-      "bytes": 56237891,
-      "sha256": "7f172136a47d252bc03fde26aca6f9dcd9451bfb623526caa8d668f1d5d2dbed",
+      "bytes": 55988650,
+      "sha256": "a38fa61ab7d0fae8169d9bb9c34ea96074693d8e8b3bd76ffa114260854234f8",
       "description": "Participant archive; anonymized data only"
     },
     "example_structures.zip": {
-      "bytes": 8620,
-      "sha256": "347b1b5ced368a0b636bfab59c79fb007fb1cf754482dd4526c5230b2f264fb0",
+      "bytes": 7546,
+      "sha256": "6c963089e27ef22d3ae0e0a62c9f9821de23565fab59e5bcf2fa5fcf9206f53f",
       "description": "Participant archive; anonymized data only"
     },
     "starter_kit.zip": {
-      "bytes": 5792999,
-      "sha256": "f51a102b81b06a135f23a64a1b697ab191d82a3c6c61e53318b33217a48dd12b",
+      "bytes": 5776786,
+      "sha256": "6f58e1bb53d206161209d638daf18dc9f70aa57ac9035c816bc9df5f8a2094c2",
       "description": "Participant archive; anonymized data only"
     },
     "baseline_code.zip": {
-      "bytes": 7674,
-      "sha256": "1518907ba03ff62a6bf29c9052917ec7298c587d8666b7a87b185489859e7eb8",
+      "bytes": 7743,
+      "sha256": "9138e2bcbc75e0980bdf72b8da77d678f9812edfd02dc6ff31a3013b0117d669",
       "description": "Participant archive; anonymized data only"
     }
   }

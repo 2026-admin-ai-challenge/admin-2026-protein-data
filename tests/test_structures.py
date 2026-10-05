@@ -4,7 +4,7 @@ import tarfile
 import numpy as np
 import pandas as pd
 import pytest
-from scripts.structure_dataset import parse_pdb, prepare_structures
+from scripts.structure_dataset import consecutive, parse_pdb, prepare_structures
 from scripts.structure_features import structure_features, FEATURE_NAMES
 
 
@@ -49,6 +49,20 @@ def test_altloc_occupancy_and_first_model():
 def test_same_insertion_code_on_successive_numbers_is_continuous():
     text='\n'.join(atom(i,insertion='P') for i in range(1,43))
     assert np.all(parse_pdb(text,'A'*42)['segment_index']==0)
+
+
+@pytest.mark.parametrize("a,b,expected", [
+    (("A", 208, ""), ("A", 209, "A"), True),
+    (("A", 21, "A"), ("A", 22, ""), True),
+    (("A", 4, "P"), ("A", 5, "P"), True),
+    (("A", 21, ""), ("A", 21, "A"), True),
+    (("A", 21, "A"), ("A", 21, "B"), True),
+    (("A", 21, "A"), ("A", 23, ""), False),
+    (("A", 22, ""), ("A", 21, "A"), False),
+    (("A", 21, "A"), ("B", 22, ""), False),
+])
+def test_insertion_code_boundaries(a, b, expected):
+    assert consecutive(a, b) is expected
 
 
 def test_altlocs_use_one_domain_wide_conformer():
