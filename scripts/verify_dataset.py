@@ -37,6 +37,24 @@ def verify(root=ROOT):
     for filename,info in private_manifest["files"].items():
         with (priv/filename).open("rb") as f:
             assert hashlib.file_digest(f,"sha256").hexdigest()==info["sha256"]
+    stats=meta["stats"]
+    assert len(train)==stats["train"] and len(test)==stats["test"]
+    assert stats["train"]+stats["test"]==stats["total"]
+    assert train.label.nunique()==stats["classes"]
+    assert pd.concat([train.label,labels.label]).value_counts().to_dict()==stats["samples_per_class"]
+    checksums_path=root/"data/DATASET_CHECKSUMS.json"
+    if checksums_path.exists():
+        for relative,info in json.loads(checksums_path.read_text()).items():
+            path=root/relative
+            assert path.stat().st_size==info["bytes"],relative
+            with path.open("rb") as f:
+                assert hashlib.file_digest(f,"sha256").hexdigest()==info["sha256"],relative
+    version_path=root/"data/DATA_VERSION.json"
+    if version_path.exists():
+        version=json.loads(version_path.read_text())
+        assert version["counts"]=={"train":len(train),"test":len(test),"public":len(public),"private":len(private),"classes":train.label.nunique()}
+        assert version["metadata_sha256"]==hashlib.sha256((pub/"metadata.json").read_bytes()).hexdigest()
+        assert version["checksums_sha256"]==hashlib.sha256(checksums_path.read_bytes()).hexdigest()
     try:
         from .verify_structures import verify_structures
     except ImportError:
