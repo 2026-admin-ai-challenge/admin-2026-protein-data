@@ -27,10 +27,21 @@ def test_cleaning_excludes_ambiguous_duplicates_and_lengths():
     assert result.iloc[0].homologous_superfamily=="1.10.8.2"
 
 
-def test_curated_source_exclusions_match_pr4_review():
+def test_curated_source_exclusions_match_quality_reviews():
     reviewed=pd.read_csv(ROOT/"docs/quality/day2-abnormal-samples.csv",dtype=str)
     exclusions=pd.read_csv(ROOT/"data/private/quality_exclusions.csv",dtype=str)
     bad=set(reviewed.loc[reviewed["판정"]=="오류 (원본 구조)","샘플 ID"])
-    assert len(bad)==len(exclusions)==21
-    assert set(exclusions.reference_train_id)==bad
+    day3={
+        "TRAIN_006196", "TRAIN_003522", "TRAIN_019154", "TEST_001746",
+        "TEST_000447", "TEST_001110", "TEST_002261", "TEST_002855",
+        "TEST_003365", "TEST_003807", "TEST_003982", "TEST_004963",
+    }
+    assert len(bad)==21 and len(exclusions)==33
+    assert set(exclusions.reference_sample_id)==bad|day3
+    assert exclusions.domain_id.is_unique
+    assert exclusions.reason.value_counts().to_dict()=={
+        "A-02":2, "A-05":3, "A-06":16, "X-01":1, "X-02":3, "P-30":8,
+    }
     assert load_quality_exclusions()==set(exclusions.domain_id)
+    mapping=pd.read_csv(ROOT/"data/private/id_mapping.csv",dtype=str)
+    assert not set(exclusions.domain_id)&set(mapping.domain_id)

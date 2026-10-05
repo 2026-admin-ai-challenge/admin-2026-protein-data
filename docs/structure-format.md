@@ -11,7 +11,7 @@ The sequence is the official CATH S40 **ATOM** domain sequence, not the full SEQ
 |---|---|---|
 | residue_type | `[N]` uint8 | Index in `ACDEFGHIKLMNPQRSTVWY` |
 | residue_index | `[N]` int32 | 0-based index into supplied domain sequence; NOT original PDB numbering |
-| segment_index | `[N]` int32 | Continuous backbone segment; breaks on missing Cα, numbering/chain discontinuity or Cα step >4.5 Å |
+| segment_index | `[N]` int32 | Continuous backbone segment; breaks on missing Cα, chain change, PDB residue-number gap or reversal, or Cα step >4.5 Å. Insertion codes do not break a segment (`208 → 209A`, `21A → 22`, and `21 → 21A` are continuous). |
 | pos | `[N,3]` float32 | Cα coordinates in Å, centered on observed Cα centroid |
 | ca_mask | `[N]` bool | Whether coordinates exist. False rows contain zero placeholders, not physical coordinates |
 

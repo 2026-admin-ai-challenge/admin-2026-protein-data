@@ -8,10 +8,10 @@
 git clone https://github.com/2026-admin-ai-challenge/admin-2026-protein-data.git
 ```
 
-- 학습 21,545개 / 평가 5,387개 / 20개 클래스 (품질 재생성본)
+- 학습 21,536개 / 평가 5,384개 / 20개 클래스 (Day 3 품질 재생성본)
 - 학습 및 예제 데이터: `data/public/`
 - 운영진 평가 입력·정답·ID 매핑: `data/private/`
-- 파일별 체크섬: `data/DATASET_CHECKSUMS.json`
+- 파일별 체크섬: `data/public/metadata.json`, `data/private/manifest.json`
 
 참가자용 배포에는 `data/public/`만 사용합니다. 공식 원본과 중간 캐시, Python 가상환경은 Git에서 제외합니다. 기존 파일 검증은 `./run-preprocessing.ps1 -VerifyOnly`로 수행합니다. 새 데이터를 생성할 때는 기존 파일을 덮어쓰지 않고 `prepare_dataset.py --root <새 폴더>`를 사용합니다.
 
@@ -71,7 +71,7 @@ python -m venv .venv
 - `docs/`: 데이터 출처, 좌표 형식, 참가자 가이드
 - `tests/`: 데이터 파이프라인 검증
 
-현재 선택 결과는 26,932개 샘플, 20개 Architecture, 학습 21,545개, 평가 5,387개입니다. PR #4 품질 판정에 따라 원본 구조 오류 21개를 제외하고 좌표 충돌·대체 위치 문제를 검사해 다시 생성했습니다. 공개 CATH 자료와 재현 가능한 생성 코드로 숨긴 평가 정답을 추적할 수 있으므로, 이 저장소는 **운영진 전용 비공개**로 유지해야 합니다.
+현재 선택 결과는 26,920개 샘플, 20개 Architecture, 학습 21,536개, 평가 5,384개입니다. PR #4·#9 품질 판정에 따라 원본 구조·대체 위치 오류 33개를 원본 domain 기준으로 제외하고, 잔기 번호 경계 처리를 수정해 다시 생성했습니다. 공개 CATH 자료와 재현 가능한 생성 코드로 숨긴 평가 정답을 추적할 수 있으므로, 이 저장소는 **운영진 전용 비공개**로 유지해야 합니다.
 
 ## 대회 전 생성
 
@@ -89,7 +89,7 @@ python scripts/prepare_dataset.py    # 서열·3D 전처리 후 학습/평가 �
 python scripts/verify_dataset.py     # 결과 검증
 ```
 
-`data/raw/`에는 CATH 원본과 SHA-256 기록(`manifest.json`)이 저장됩니다. `data/public/`에는 참가자용 `train.csv`, `train_structures.zip`, `train_features.csv`, 검증 분할, 학습 샘플 3건에서 복사한 추론 예제가 생성됩니다. `data/private/`에는 서버 전용 `test.csv`, `test_structures.zip`, `test_features.csv`, `labels.csv`, 원본 ID 매핑과 체크섬 기록이 생성됩니다. **`private/` 전체를 참가자 다운로드나 추론 컨테이너에 제공하지 마세요.** 생성된 공개·운영진 데이터는 운영진 공유를 위해 이 비공개 Git 저장소에 포함하며, 원본과 중간 캐시는 제외합니다. `prepare_dataset.py`도 원본이 없으면 다운로드를 먼저 수행하므로 **한 명령으로 생성하려면 이 명령만 실행**해도 됩니다. 기존 정답 파일은 덮어쓰지 않습니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
+`data/raw/`에는 CATH 원본과 SHA-256 기록(`manifest.json`)이 저장됩니다. `data/public/`에는 참가자용 `train.csv`, `train_structures.zip`, `train_features.csv`, 검증 분할, 학습 샘플 3건에서 복사한 추론 예제가 생성됩니다. `data/private/`에는 서버 전용 `test.csv`, `test_structures.zip`, `test_features.csv`, `labels.csv`, 원본 ID 매핑과 체크섬 기록이 생성됩니다. 재생성본의 건수와 해시는 `data/DATA_VERSION.json`, 공개·비공개 파일별 무결성 값은 `data/DATASET_CHECKSUMS.json`에 기록합니다. **`private/` 전체를 참가자 다운로드나 추론 컨테이너에 제공하지 마세요.** 생성된 공개·운영진 데이터는 운영진 공유를 위해 이 비공개 Git 저장소에 포함하며, 원본과 중간 캐시는 제외합니다. `prepare_dataset.py`도 원본이 없으면 다운로드를 먼저 수행하므로 **한 명령으로 생성하려면 이 명령만 실행**해도 됩니다. 기존 정답 파일은 덮어쓰지 않습니다. 대회 중 데이터 교체는 기존 제출 점수의 의미를 바꾸므로 하지 마세요.
 
 웹사이트 저장소와 같은 상위 디렉터리에 이 저장소를 두면 웹사이트의 Docker Compose가 `../admin-2026-protein-data/data`를 API에 읽기 전용으로 연결합니다. 다른 위치라면 웹사이트 `.env`의 `DATA_HOST_DIR`을 설정하세요.
 

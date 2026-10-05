@@ -59,7 +59,7 @@
       "missing_tokens": 0
     },
     "data/public/train.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "sequence",
@@ -69,7 +69,7 @@
       "missing_tokens": 0
     },
     "data/public/train_features.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "aa_A",
@@ -108,7 +108,7 @@
       "missing_tokens": 0
     },
     "data/public/validation_split.csv": {
-      "rows": 21545,
+      "rows": 21536,
       "columns": [
         "id",
         "fold"
@@ -117,7 +117,7 @@
       "missing_tokens": 0
     },
     "data/private/id_mapping.csv": {
-      "rows": 26932,
+      "rows": 26920,
       "columns": [
         "id",
         "domain_id",
@@ -127,7 +127,7 @@
       "missing_tokens": 0
     },
     "data/private/labels.csv": {
-      "rows": 5387,
+      "rows": 5384,
       "columns": [
         "id",
         "label",
@@ -137,7 +137,7 @@
       "missing_tokens": 0
     },
     "data/private/test.csv": {
-      "rows": 5387,
+      "rows": 5384,
       "columns": [
         "id",
         "sequence"
@@ -146,7 +146,7 @@
       "missing_tokens": 0
     },
     "data/private/test_features.csv": {
-      "rows": 5387,
+      "rows": 5384,
       "columns": [
         "id",
         "aa_A",
@@ -185,7 +185,7 @@
       "missing_tokens": 0
     }
   },
-  "total": 26932,
+  "total": 26920,
   "classes": [
     {
       "label": "1.10",
@@ -203,7 +203,7 @@
     },
     {
       "label": "1.25",
-      "train": 367,
+      "train": 366,
       "test": 92,
       "public": 28,
       "private": 64
@@ -232,8 +232,8 @@
     {
       "label": "2.20",
       "train": 126,
-      "test": 32,
-      "public": 10,
+      "test": 31,
+      "public": 9,
       "private": 22
     },
     {
@@ -245,17 +245,17 @@
     },
     {
       "label": "2.40",
-      "train": 1006,
+      "train": 1005,
       "test": 251,
       "public": 75,
       "private": 176
     },
     {
       "label": "2.60",
-      "train": 2319,
-      "test": 580,
+      "train": 2318,
+      "test": 579,
       "public": 174,
-      "private": 406
+      "private": 405
     },
     {
       "label": "2.70",
@@ -273,21 +273,21 @@
     },
     {
       "label": "3.20",
-      "train": 772,
+      "train": 771,
       "test": 193,
       "public": 58,
       "private": 135
     },
     {
       "label": "3.30",
-      "train": 3336,
-      "test": 834,
+      "train": 3333,
+      "test": 833,
       "public": 250,
-      "private": 584
+      "private": 583
     },
     {
       "label": "3.40",
-      "train": 4605,
+      "train": 4603,
       "test": 1151,
       "public": 345,
       "private": 806
@@ -329,10 +329,10 @@
     }
   ],
   "split": {
-    "train": 21545,
-    "test": 5387,
-    "public": 1616,
-    "private": 3771
+    "train": 21536,
+    "test": 5384,
+    "public": 1615,
+    "private": 3769
   },
   "length": {
     "min": 40,
@@ -341,15 +341,15 @@
   "source_sequence_and_label_match": true,
   "coordinates": {
     "train": {
-      "residues": 3243934,
-      "missing_ca_residues": 201,
-      "structures_with_missing_ca": 195,
+      "residues": 3226187,
+      "missing_ca_residues": 198,
+      "structures_with_missing_ca": 192,
       "minimum_ca_coverage": 0.96875
     },
     "test": {
-      "residues": 849469,
-      "missing_ca_residues": 58,
-      "structures_with_missing_ca": 58,
+      "residues": 865567,
+      "missing_ca_residues": 61,
+      "structures_with_missing_ca": 61,
       "minimum_ca_coverage": 0.9795918367346939
     }
   },
