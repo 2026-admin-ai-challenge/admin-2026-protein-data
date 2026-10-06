@@ -79,6 +79,44 @@ python scripts/quality/day3_ala_runs.py .
 
 `day2_extended_verify.py`는 1차 데이터의 ID가 코드에 들어 있어 `797d114` 데이터에서는 실행되지 않는다.
 
+## Day 4: 품질 보고서 2차 (전수 점검)
+
+`docs/quality/day4-*.md`의 결과를 다시 계산한다. 데이터 버전 `cb2f530`(PR #11) 기준. 점검 순서는 `docs/quality/day4-quality-template.md`를 따른다.
+
+학습·평가 모두 위 Day 1 · Day 2 · Day 3 명령을 다시 돌린다(평가는 `day3_test_view.py`로 만든 폴더 사용). 모양 섞임은 학습에도 적용한다:
+
+```bash
+python scripts/quality/day3_altloc_mix.py flags . <작업 폴더>/mix_train train
+python scripts/quality/fetch_pdb.py <작업 폴더>/mix_train <작업 폴더>/mix_train/adjacent_flags.json
+python scripts/quality/day3_altloc_mix.py check . <작업 폴더>/mix_train train
+```
+
+번호 규칙으로 끊긴 자리 전체의 실제 결합 (D-02):
+
+```bash
+python scripts/quality/day3_boundary.py . <작업 폴더> "번호 건너뜀" "번호 역행" "삽입코드 역순" "삽입코드 건너뜀"
+```
+
+비정상 값 기준에 처음 걸린 샘플 찾기 (A 신규 판정). 학습·평가 작업 폴더에 `rest.json`, `hits_067.json`이 있어야 한다:
+
+```bash
+python scripts/quality/day4_new_hits.py . <작업 폴더> <작업 폴더>/test
+```
+
+데이터 버전 간 분할 변화 (E-05):
+
+```bash
+python scripts/quality/day4_split_diff.py . 797d114
+```
+
+학습·평가 누출과 공개 파일 점검 (E-04 서열 포함, E-06 거의 같은 서열, E-07 같은 특징값, E-08 같은 PDB 항목, R-01 공개 파일):
+
+```bash
+python scripts/quality/day4_leak_checks.py .
+```
+
+2026-10-07 `cb2f530` 데이터로 실행해 보고서 수치(처음 걸린 샘플 0건, 분할 이동 1,194 / 1,188, 서열 포함 21쌍 · 거의 같은 서열 11쌍 · 평가 30개, 모양 섞임 학습 43곳 · 평가 1곳, 실제 결합 학습 481 · 평가 105 등)가 같게 나오는 것을 확인했다. `verify_dataset.py`는 pandas가 필요하다.
+
 ## 주의
 
 - `c12_suspects.py`, `day2_hits.py`는 원본 domain 이름을 쓰기 위해 `data/private/id_mapping.csv`를 읽는다. 출력 JSON에 원본 domain 이름이 들어가므로 작업 폴더는 공유하지 않는다.
