@@ -48,15 +48,37 @@ def choose_ca_locations(residues):
         choices = entry["ca"]
         if not choices:
             entry["chosen_ca"] = None
+            entry["chosen_alt"] = None
         elif "" in choices:
             entry["chosen_ca"] = choices[""][1]
+            entry["chosen_alt"] = ""
         elif preferred in choices:
             entry["chosen_ca"] = choices[preferred][1]
+            entry["chosen_alt"] = preferred
         elif len(choices) == 1:
-            # The only observed location is usable; no competing state exists here.
-            entry["chosen_ca"] = next(iter(choices.values()))[1]
+            # A preselected location still needs the adjacent consistency check.
+            alt = next(iter(choices))
+            entry["chosen_ca"] = choices[alt][1]
+            entry["chosen_alt"] = alt
         else:
             raise ValueError("incompatible_altlocs")
+
+def has_adjacent_altloc_mismatch(residues):
+    """Conservatively reject explicit A/B mixing within a published segment.
+
+    Blank sites are shared. Chain/number/coordinate breaks retain the existing
+    segment rules; alternate letters across separate segments are independent.
+    No geometric outlier cutoff is used to reject otherwise valid cis bonds.
+    """
+    entries = list(residues.items())
+    for (a, left), (b, right) in zip(entries, entries[1:]):
+        al, ar = left["chosen_alt"], right["chosen_alt"]
+        if not al or not ar or al == ar or not consecutive(a, b):
+            continue
+        distance = np.linalg.norm(left["chosen_ca"] - right["chosen_ca"])
+        if 0 < distance <= 4.5:
+            return True
+    return False
 
 def has_nonlocal_ca_clash(pos, mask, minimum=3.0):
     """Flag C-alpha overlaps at least three sequence positions apart."""
@@ -94,6 +116,7 @@ def parse_pdb(text, expected_sequence):
     # No heuristic alignment: reject disagreements instead of assigning coordinates to the wrong residue.
     if sequence != expected_sequence: raise ValueError("atom_sequence_mismatch")
     choose_ca_locations(residues)
+    if has_adjacent_altloc_mismatch(residues): raise ValueError("adjacent_altloc_mismatch")
     keys = list(residues)
     mask = np.array([r["chosen_ca"] is not None for r in residues.values()], dtype=bool)
     if mask.sum() < 40 or mask.mean() < .95: raise ValueError("insufficient_ca_coverage")
@@ -120,24 +143,32 @@ def prepare_structures(raw, frame, excluded_domains=None):
         raise ValueError(f"Quality exclusions absent from source data: {sorted(unknown)}")
     accepted = set()
     rejected = Counter()
+    rejection_rows = []
     with tarfile.open(raw / "s40.pdb.tgz", "r|gz") as archive:
         for member in archive:
             domain = Path(member.name).name
             if not member.isfile() or domain not in wanted: continue
             if domain in excluded_domains:
                 rejected["curated_source_quality"] += 1
+                rejection_rows.append((domain, "curated_source_quality"))
                 continue
             if domain in accepted: raise ValueError("duplicate structure in official archive")
             try:
                 structure = parse_pdb(archive.extractfile(member).read().decode("ascii"), wanted[domain])
             except ValueError as error:
                 rejected[str(error)] += 1
+                rejection_rows.append((domain, str(error)))
                 continue
             np.savez(cache / cache_name(domain), **structure)
             accepted.add(domain)
             if len(accepted) % 5000 == 0: print(f"Parsed {len(accepted)} structures", flush=True)
     rejected["missing_or_rejected_structure"] = len(wanted) - len(accepted)
     (raw / "structure-audit.json").write_text(json.dumps({"accepted": len(accepted), "exclusions": dict(rejected)}, indent=2))
+    import csv
+    with (raw / "structure-rejections.csv").open("w", newline="") as output:
+        writer = csv.writer(output, lineterminator="\n")
+        writer.writerow(["domain_id", "reason"])
+        writer.writerows(sorted(rejection_rows))
     return frame[frame.domain_id.isin(accepted)].reset_index(drop=True), dict(rejected)
 
 def publish_structures(frame, raw, public, split):

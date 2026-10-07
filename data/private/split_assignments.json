@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "reference_commit": "cb2f530c266f276d94a03eb63da7c4df56f0339c",
+  "rows": 26920,
+  "sha256": "b2eaf13ecfaca47d545f807d59aaab0ef978b6f0182bdc009c4f3838d39aa6df",
+  "reference_files": {
+    "data/public/train.csv": "41f2a960edfc51f28e8e9a54b451811875d95edb721faf7630cd4574e5a6fc76",
+    "data/private/id_mapping.csv": "84d311eced2bfbc8c4ea96dfbba7b23bb28fa2cdee1b43d89aa7a0eb20fa3f49",
+    "data/private/labels.csv": "869b5971a6f9f914a7077122b2d9d3bb6392f1394607b97e13397de286843a9d",
+    "data/public/validation_split.csv": "94f8d66fb9a8aefc1ae2f922ef68849534a634263d25e0537135ea11c78a325a"
+  },
+  "source_sha256": {
+    "s40.fa": "2b9335c395e94c9bfe51e91d4f4a6147821c859a8430b1a7363a4993be07aa03",
+    "s40.atom.fa": "e69c2b4fc1382431c95b671953f6182552c29ce717f5aadc1600f2eccd0f202a",
+    "s40.pdb.tgz": "e47e8ddcabcb87f4bb061626cafc7da04b252f6202e59d9413d0fe764f8dd23e",
+    "domains.txt": "2f87544bb8844ff37ad1d9348dfe0a23a7c9e4837e0d207733935148e088cc81"
+  }
+}

@@ -82,6 +82,23 @@ def test_nonlocal_ca_overlap_is_rejected():
     with pytest.raises(ValueError,match='nonlocal_ca_clash'):
         parse_pdb('\n'.join(lines),'A'*42)
 
+def test_preselected_adjacent_altloc_mixing_is_rejected_even_at_normal_distance():
+    lines=[atom(i,alt='A' if i==10 else 'B' if i==11 else '') for i in range(1,43)]
+    with pytest.raises(ValueError,match='adjacent_altloc_mismatch'):
+        parse_pdb('\n'.join(lines),'A'*42)
+
+def test_shared_blank_sites_and_separate_segments_do_not_force_altloc_letters():
+    lines=[atom(i,alt='A' if i==10 else 'B' if i==12 else '') for i in range(1,43)]
+    assert parse_pdb('\n'.join(lines),'A'*42)['ca_mask'].all()
+    lines=[atom(i,alt='A' if i==10 else 'B' if i==11 else '',chain='A' if i<11 else 'B') for i in range(1,43)]
+    g=parse_pdb('\n'.join(lines),'A'*42)
+    assert g['segment_index'][9]!=g['segment_index'][10]
+
+def test_cis_distance_with_coherent_altloc_is_retained():
+    lines=[atom(i,alt='A' if i in (10,11) else '',xyz=((i*3.8-0.9 if i>=11 else i*3.8),0,0)) for i in range(1,43)]
+    g=parse_pdb('\n'.join(lines),'A'*42)
+    assert g['segment_index'][9]==g['segment_index'][10]
+
 
 def test_reviewed_domain_is_excluded_before_publication(tmp_path):
     raw=tmp_path/'raw'; raw.mkdir()
