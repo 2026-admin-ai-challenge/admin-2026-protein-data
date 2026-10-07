@@ -59,7 +59,7 @@
       "missing_tokens": 0
     },
     "data/public/train.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "sequence",
@@ -69,7 +69,7 @@
       "missing_tokens": 0
     },
     "data/public/train_features.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "aa_A",
@@ -108,7 +108,7 @@
       "missing_tokens": 0
     },
     "data/public/validation_split.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "fold"
@@ -117,7 +117,7 @@
       "missing_tokens": 0
     },
     "data/private/id_mapping.csv": {
-      "rows": 26920,
+      "rows": 26669,
       "columns": [
         "id",
         "domain_id",
@@ -127,7 +127,7 @@
       "missing_tokens": 0
     },
     "data/private/labels.csv": {
-      "rows": 5384,
+      "rows": 5330,
       "columns": [
         "id",
         "label",
@@ -136,8 +136,17 @@
       "empty_cells": 0,
       "missing_tokens": 0
     },
+    "data/private/structure_rejections.csv": {
+      "rows": 6594,
+      "columns": [
+        "domain_id",
+        "reason"
+      ],
+      "empty_cells": 0,
+      "missing_tokens": 0
+    },
     "data/private/test.csv": {
-      "rows": 5384,
+      "rows": 5330,
       "columns": [
         "id",
         "sequence"
@@ -146,7 +155,7 @@
       "missing_tokens": 0
     },
     "data/private/test_features.csv": {
-      "rows": 5384,
+      "rows": 5330,
       "columns": [
         "id",
         "aa_A",
@@ -185,25 +194,25 @@
       "missing_tokens": 0
     }
   },
-  "total": 26920,
+  "total": 26669,
   "classes": [
     {
       "label": "1.10",
-      "train": 3246,
-      "test": 812,
-      "public": 244,
-      "private": 568
+      "train": 3217,
+      "test": 800,
+      "public": 240,
+      "private": 560
     },
     {
       "label": "1.20",
-      "train": 1532,
-      "test": 383,
-      "public": 115,
-      "private": 268
+      "train": 1521,
+      "test": 380,
+      "public": 114,
+      "private": 266
     },
     {
       "label": "1.25",
-      "train": 366,
+      "train": 363,
       "test": 92,
       "public": 28,
       "private": 64
@@ -211,20 +220,20 @@
     {
       "label": "2.10",
       "train": 243,
-      "test": 61,
+      "test": 60,
       "public": 18,
-      "private": 43
+      "private": 42
     },
     {
       "label": "2.160",
-      "train": 96,
-      "test": 24,
+      "train": 95,
+      "test": 23,
       "public": 7,
-      "private": 17
+      "private": 16
     },
     {
       "label": "2.170",
-      "train": 102,
+      "train": 101,
       "test": 26,
       "public": 8,
       "private": 18
@@ -232,107 +241,107 @@
     {
       "label": "2.20",
       "train": 126,
-      "test": 31,
+      "test": 30,
       "public": 9,
-      "private": 22
+      "private": 21
     },
     {
       "label": "2.30",
-      "train": 684,
+      "train": 680,
       "test": 171,
       "public": 51,
       "private": 120
     },
     {
       "label": "2.40",
-      "train": 1005,
-      "test": 251,
+      "train": 1000,
+      "test": 250,
       "public": 75,
-      "private": 176
+      "private": 175
     },
     {
       "label": "2.60",
-      "train": 2318,
-      "test": 579,
+      "train": 2295,
+      "test": 573,
       "public": 174,
-      "private": 405
+      "private": 399
     },
     {
       "label": "2.70",
-      "train": 152,
-      "test": 38,
-      "public": 11,
+      "train": 150,
+      "test": 37,
+      "public": 10,
       "private": 27
     },
     {
       "label": "3.10",
-      "train": 860,
-      "test": 215,
+      "train": 854,
+      "test": 212,
       "public": 64,
-      "private": 151
+      "private": 148
     },
     {
       "label": "3.20",
-      "train": 771,
-      "test": 193,
-      "public": 58,
-      "private": 135
+      "train": 759,
+      "test": 191,
+      "public": 57,
+      "private": 134
     },
     {
       "label": "3.30",
-      "train": 3333,
-      "test": 833,
-      "public": 250,
+      "train": 3317,
+      "test": 831,
+      "public": 248,
       "private": 583
     },
     {
       "label": "3.40",
-      "train": 4603,
-      "test": 1151,
-      "public": 345,
-      "private": 806
+      "train": 4539,
+      "test": 1132,
+      "public": 339,
+      "private": 793
     },
     {
       "label": "3.50",
-      "train": 228,
+      "train": 225,
       "test": 57,
       "public": 17,
       "private": 40
     },
     {
       "label": "3.60",
-      "train": 212,
+      "train": 206,
       "test": 53,
       "public": 16,
       "private": 37
     },
     {
       "label": "3.90",
-      "train": 1092,
-      "test": 273,
-      "public": 82,
-      "private": 191
+      "train": 1083,
+      "test": 271,
+      "public": 81,
+      "private": 190
     },
     {
       "label": "4.10",
-      "train": 226,
+      "train": 225,
       "test": 56,
       "public": 17,
       "private": 39
     },
     {
       "label": "6.10",
-      "train": 341,
+      "train": 340,
       "test": 85,
       "public": 26,
       "private": 59
     }
   ],
   "split": {
-    "train": 21536,
-    "test": 5384,
-    "public": 1615,
-    "private": 3769
+    "train": 21339,
+    "test": 5330,
+    "public": 1599,
+    "private": 3731
   },
   "length": {
     "min": 40,
@@ -341,13 +350,13 @@
   "source_sequence_and_label_match": true,
   "coordinates": {
     "train": {
-      "residues": 3226187,
-      "missing_ca_residues": 198,
-      "structures_with_missing_ca": 192,
+      "residues": 3189172,
+      "missing_ca_residues": 194,
+      "structures_with_missing_ca": 188,
       "minimum_ca_coverage": 0.96875
     },
     "test": {
-      "residues": 865567,
+      "residues": 854910,
       "missing_ca_residues": 61,
       "structures_with_missing_ca": 61,
       "minimum_ca_coverage": 0.9795918367346939

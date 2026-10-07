@@ -5,16 +5,18 @@
     "min_ca_coverage": 0.95,
     "min_nonlocal_ca_distance": 3.0,
     "residue_sequence": "ATOM domain sequence; exact PDB residue match",
-    "curated_source_exclusions": 33,
-    "curated_exclusions_sha256": "2d575e6964a3e31b9641afbffa6e5923cc6ffcc750fedae24d8c2a384b6f768c",
+    "curated_source_exclusions": 66,
+    "curated_exclusions_sha256": "b387b2dbb7bcb009c9a2031a58cd0197c7f05973421e1993e0e14505640e6dcf",
     "exclusions": {
       "atom_sequence_mismatch": 6291,
-      "curated_source_quality": 33,
+      "curated_source_quality": 66,
+      "adjacent_altloc_mismatch": 227,
       "nonlocal_ca_clash": 8,
       "incompatible_altlocs": 1,
       "insufficient_ca_coverage": 1,
-      "missing_or_rejected_structure": 6334
-    }
+      "missing_or_rejected_structure": 6594
+    },
+    "reject_adjacent_altloc_mismatch": true
   },
   "source": "CATH",
   "version": "4.4",
@@ -49,39 +51,40 @@
     "public_test": 0.3,
     "private_test": 0.7
   },
-  "actual_train_fraction": 0.8,
+  "actual_train_fraction": 0.800142487532341,
   "stats": {
-    "total": 26920,
+    "total": 26669,
     "classes": 20,
-    "train": 21536,
-    "test": 5384,
+    "train": 21339,
+    "test": 5330,
+    "distribution_scope": "train",
     "samples_per_class": {
-      "3.40": 5754,
-      "3.30": 4166,
-      "1.10": 4058,
-      "2.60": 2897,
-      "1.20": 1915,
-      "3.90": 1365,
-      "2.40": 1256,
-      "3.10": 1075,
-      "3.20": 964,
-      "2.30": 855,
-      "1.25": 458,
-      "6.10": 426,
-      "2.10": 304,
-      "3.50": 285,
-      "4.10": 282,
-      "3.60": 265,
-      "2.70": 190,
-      "2.20": 157,
-      "2.170": 128,
-      "2.160": 120
+      "3.40": 4539,
+      "3.30": 3317,
+      "1.10": 3217,
+      "2.60": 2295,
+      "1.20": 1521,
+      "3.90": 1083,
+      "2.40": 1000,
+      "3.10": 854,
+      "3.20": 759,
+      "2.30": 680,
+      "1.25": 363,
+      "6.10": 340,
+      "2.10": 243,
+      "3.50": 225,
+      "4.10": 225,
+      "3.60": 206,
+      "2.70": 150,
+      "2.20": 126,
+      "2.170": 101,
+      "2.160": 95
     },
     "sequence_length": {
-      "mean": 151.99680534918275,
-      "median": 129.0,
+      "mean": 149.45273911617227,
+      "median": 127.0,
       "min": 40,
-      "max": 1146
+      "max": 1031
     }
   },
   "sources": {
@@ -107,41 +110,44 @@
     }
   },
   "excluded_architectures": {
-    "2.130": "2.130: no feasible held-out groups",
-    "2.80": "2.80: no feasible held-out groups",
-    "3.80": "3.80: no feasible held-out groups",
-    "2.115": "fewer than 50 cleaned samples",
-    "3.55": "fewer than 50 cleaned samples",
-    "2.100": "fewer than 50 cleaned samples",
-    "2.102": "fewer than 50 cleaned samples",
-    "3.70": "fewer than 50 cleaned samples",
-    "3.100": "fewer than 50 cleaned samples",
-    "3.15": "fewer than 50 cleaned samples",
-    "3.65": "fewer than 50 cleaned samples",
-    "2.90": "fewer than 50 cleaned samples",
-    "3.75": "fewer than 50 cleaned samples",
-    "2.50": "fewer than 50 cleaned samples",
-    "2.140": "fewer than 50 cleaned samples",
-    "2.150": "fewer than 50 cleaned samples",
-    "2.110": "fewer than 50 cleaned samples",
-    "1.40": "fewer than 50 cleaned samples",
-    "2.105": "fewer than 50 cleaned samples",
-    "2.180": "fewer than 50 cleaned samples"
+    "1.40": "outside frozen reference classes",
+    "1.50": "outside frozen reference classes",
+    "2.100": "outside frozen reference classes",
+    "2.102": "outside frozen reference classes",
+    "2.105": "outside frozen reference classes",
+    "2.110": "outside frozen reference classes",
+    "2.115": "outside frozen reference classes",
+    "2.120": "outside frozen reference classes",
+    "2.130": "outside frozen reference classes",
+    "2.140": "outside frozen reference classes",
+    "2.150": "outside frozen reference classes",
+    "2.180": "outside frozen reference classes",
+    "2.50": "outside frozen reference classes",
+    "2.80": "outside frozen reference classes",
+    "2.90": "outside frozen reference classes",
+    "3.100": "outside frozen reference classes",
+    "3.15": "outside frozen reference classes",
+    "3.55": "outside frozen reference classes",
+    "3.65": "outside frozen reference classes",
+    "3.70": "outside frozen reference classes",
+    "3.75": "outside frozen reference classes",
+    "3.80": "outside frozen reference classes",
+    "6.20": "outside frozen reference classes"
   },
-  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, and 33 curated source exclusions. Remove all non-standard amino acids; >=50 samples and feasible H-group split. Up to top 20 eligible classes.",
+  "policy": "Exact ATOM sequence/structure correspondence, >=95% CA coverage, >=40 observed CA, no nonlocal CA clashes <3.0 A, coherent alternate-location selection, and 66 curated source exclusions. Frozen reference classes, IDs, H-group train/test assignments, Public/Private partitions and fit/validation folds; exclusions never rebalance splits.",
   "files": {
     "train.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "sequence",
         "label"
       ],
-      "bytes": 3635587,
-      "sha256": "41f2a960edfc51f28e8e9a54b451811875d95edb721faf7630cd4574e5a6fc76"
+      "bytes": 3594827,
+      "sha256": "9b9fe01085379e582ae2b45de1bb55c98065ac9662fd80628a24065e20240b8f"
     },
     "train_features.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "aa_A",
@@ -176,17 +182,17 @@
         "distance_q50",
         "distance_q75"
       ],
-      "bytes": 12382499,
-      "sha256": "371bdde2eaca5f43af92d36c850282634ed583da5082a904955298a8f66b211b"
+      "bytes": 12267256,
+      "sha256": "1f8f2a7417bbd5fbf19e88a52636694ea44c3166c44ee8c72de3e641cab8e7a0"
     },
     "validation_split.csv": {
-      "rows": 21536,
+      "rows": 21339,
       "columns": [
         "id",
         "fold"
       ],
-      "bytes": 396269,
-      "sha256": "94f8d66fb9a8aefc1ae2f922ef68849534a634263d25e0537135ea11c78a325a"
+      "bytes": 392640,
+      "sha256": "78d1a4df55e79617849a67f4479fdea1da4ef5a2d1fc0f09a5bdaf09eff27246"
     },
     "example_input.csv": {
       "rows": 3,
@@ -246,24 +252,30 @@
       "sha256": "17c263babb9149588cce94b7a0fd3198a9ea5cb9cb14edbb0a50f9e19efc44e2"
     },
     "train_structures.zip": {
-      "bytes": 55988650,
-      "sha256": "a38fa61ab7d0fae8169d9bb9c34ea96074693d8e8b3bd76ffa114260854234f8",
+      "bytes": 55370812,
+      "sha256": "fcd80432829b74e8401b21815cb2db5a92e0d9308959e67544c4f7fbd3aa22c0",
       "description": "Participant archive; anonymized data only"
     },
     "example_structures.zip": {
       "bytes": 7546,
-      "sha256": "6c963089e27ef22d3ae0e0a62c9f9821de23565fab59e5bcf2fa5fcf9206f53f",
+      "sha256": "c5181ef6c912c9289e068e5050fdd0b27c93039fffc69a7437a29cd517857e4c",
       "description": "Participant archive; anonymized data only"
     },
     "starter_kit.zip": {
-      "bytes": 5776786,
-      "sha256": "6f58e1bb53d206161209d638daf18dc9f70aa57ac9035c816bc9df5f8a2094c2",
+      "bytes": 5718843,
+      "sha256": "4a9c66b0ed35c8e01240d2995f85f411c4bfebfde72950b70e1205a72b54a3a0",
       "description": "Participant archive; anonymized data only"
     },
     "baseline_code.zip": {
-      "bytes": 7743,
-      "sha256": "9138e2bcbc75e0980bdf72b8da77d678f9812edfd02dc6ff31a3013b0117d669",
+      "bytes": 8100,
+      "sha256": "5b66e69d983027698f5ab5cd708999641f1a10477dabc5e36c3011ef51ca8849",
       "description": "Participant archive; anonymized data only"
     }
+  },
+  "split_policy": {
+    "mode": "frozen",
+    "reference_commit": "cb2f530c266f276d94a03eb63da7c4df56f0339c",
+    "assignments_sha256": "b2eaf13ecfaca47d545f807d59aaab0ef978b6f0182bdc009c4f3838d39aa6df",
+    "retired_ids_are_not_reused": true
   }
 }

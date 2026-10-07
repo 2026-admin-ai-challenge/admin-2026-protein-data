@@ -10,5 +10,5 @@ __pycache__/
 .env
 .DS_Store
 work/
-data/raw/
+data/raw
 example_prediction.csv

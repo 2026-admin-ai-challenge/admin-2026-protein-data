@@ -8,6 +8,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
+def write_checksums(root=ROOT):
+    """Record generated outputs and organizer policies, never raw source/cache files."""
+    checksums = {}
+    for folder in ["public", "private"]:
+        for path in sorted((root / "data" / folder).iterdir()):
+            if path.is_file() and not path.name.startswith("."):
+                checksums[str(path.relative_to(root))] = {"bytes": path.stat().st_size, "sha256": sha256(path)}
+    (root / "data/DATASET_CHECKSUMS.json").write_text(json.dumps(checksums, indent=2) + "\n")
+
 
 def main(root=ROOT):
     pub, priv = root / "data/public", root / "data/private"
@@ -32,4 +41,9 @@ def main(root=ROOT):
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root", type=Path, default=ROOT)
+    args = parser.parse_args()
+    write_checksums(args.root)
+    main(args.root)

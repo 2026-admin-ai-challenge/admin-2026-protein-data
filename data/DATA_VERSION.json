@@ -3,12 +3,12 @@
   "source": "CATH v4.4 S40",
   "seed": 42,
   "counts": {
-    "train": 21536,
-    "test": 5384,
-    "public": 1615,
-    "private": 3769,
+    "train": 21339,
+    "test": 5330,
+    "public": 1599,
+    "private": 3731,
     "classes": 20
   },
-  "metadata_sha256": "7c88051b0e06e7737e7e556794b1fe326084fbd30c3471508e60790db021dc5b",
-  "checksums_sha256": "54d2765cb71e73f67178aa6d20322d45d577f775cb4bbe5398193647b248f5cf"
+  "metadata_sha256": "6839d689ca0b3628855cbd01b1395d16ccb754dda8d2836ab3a8c87605002943",
+  "checksums_sha256": "d74807975891678697b9c35ad8da8f9f5f57214c64f37ba329b5c4e571f92c91"
 }

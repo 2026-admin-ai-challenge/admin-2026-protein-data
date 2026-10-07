@@ -15,7 +15,7 @@ The sequence is the official CATH S40 **ATOM** domain sequence, not the full SEQ
 | pos | `[N,3]` float32 | Cα coordinates in Å, centered on observed Cα centroid |
 | ca_mask | `[N]` bool | Whether coordinates exist. False rows contain zero placeholders, not physical coordinates |
 
-Where the CATH domain PDB retains multiple Cα locations for a residue, regenerated data uses one preferred conformer across the domain, selected by total Cα occupancy (A wins ties). Blank locations are shared. Some CATH files already contain only one preselected alternate at each residue; missing alternatives cannot be recovered from that file. Structures with nonlocal Cα overlaps below 3.0 Å are excluded, including the reported mixed-location sample. The first model is used. Domain files can join discontinuous sequence segments; consecutive array rows need not be covalently bonded. Respect segment_index and ca_mask.
+Where the CATH domain PDB retains multiple Cα locations for a residue, regenerated data uses one preferred conformer across the domain, selected by total Cα occupancy (A wins ties). Blank locations are shared. Some CATH files already contain only one preselected alternate at each residue; missing alternatives cannot be recovered from that file. Structures with nonlocal Cα overlaps below 3.0 Å are excluded. Structures are also conservatively excluded when adjacent selected Cα sites have different explicit alternate-location letters within a continuous segment; shared blank sites and separate segments do not force matching letters. This catches preselected A/B mixing even when its Cα distance is in the normal range, without rejecting coherent cis bonds by distance alone. The first model is used. Domain files can join discontinuous sequence segments; consecutive array rows need not be covalently bonded. Respect segment_index and ca_mask. Segment boundaries follow the documented numbering and coordinate rules, rather than an exhaustive physical C–N bond test.
 
 ```python
 import io, zipfile, numpy as np
@@ -29,6 +29,8 @@ print(valid_positions.shape)
 `structure_features.py` computes 31 basic, rotation/translation-invariant features: 20 residue fractions, log length, Cα coverage, radius of gyration, three normalized covariance eigenvalues, mean/standard deviation/25th/50th/75th percentiles of pairwise Cα distances. No fitted extractor or labels are used. StandardScaler is fitted only on the learning subset in the baseline. These features are only a starting point.
 
 `validation_split.csv` contains TRAIN IDs and `fit`/`validation` only. Complete homologous superfamilies remain together, with no H-group overlap between folds. It is not the hidden test Public/Private partition. Select models on this fold, then retrain on all train rows.
+
+The reviewed reference split, validation folds, and anonymous IDs are frozen across quality regenerations. Excluded samples leave gaps in ID numbering; remaining samples are never renumbered or moved to another partition. Read IDs from the supplied files rather than constructing a consecutive ID range. Partial sequence overlap between different domains is permitted; exact duplicate sequences and H-superfamily overlap between train and test remain prohibited.
 
 CATH classification codes beyond training labels, original PDB/domain IDs, raw headers and test answers are absent. Anonymization cannot prevent matching public sequences or structures back to CATH. Label lookup, searches to recover labels and manual answers are prohibited; reproducibility review applies.
 
