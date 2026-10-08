@@ -508,14 +508,15 @@ def test_participant_lines_errors_only_drops_warnings(contract, eval_ids, classe
     경고까지 붙이면 참가자가 무엇 때문에 막혔는지 찾기 어려워진다.
     """
     rows = valid_rows(eval_ids, classes)
-    for row in rows[1:]:
-        row[1] = "1.1"          # 전부 절삭 → E507 + E506/W904 경고 동반
+    rows[1][1] = "없는클래스"          # 오류: E502
+    rows[2][0] = f" {rows[2][0]} "      # 경고: E406 (공백은 교정하고 통과시킨다)
     report = validate_text(_csv(rows), contract)
 
+    assert "E502" in report.codes and "E406" in report.codes
     assert report.warnings, "이 입력은 경고도 함께 나와야 한다"
 
     only = report.participant_lines(errors_only=True)
-    assert all("E507" in line for line in only)
+    assert all("E502" in line for line in only)
     joined = " ".join(only)
     for warning in report.warnings:
         assert warning.code not in joined, f"거절 메시지에 경고 {warning.code} 가 섞였다"
