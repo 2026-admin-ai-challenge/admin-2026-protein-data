@@ -387,15 +387,20 @@ class Report:
             "warnings": [f.to_participant_payload(strict=strict) for f in self.warnings],
         }
 
-    def participant_lines(self) -> list[str]:
+    def participant_lines(self, *, errors_only: bool = False) -> list[str]:
         """참가자 화면·응답에 그대로 쓸 한 줄 문자열 목록.
 
         채점 작업자가 메시지를 직접 조립하면서 `hint` 를 빠뜨리는 일이 있었다.
         조립 방식을 여기서 한 번 정해 두면 양쪽이 같은 내용을 보여 준다.
+
+        `errors_only=True` 는 거절 사유만 담는다. 제출을 거절할 때는 경고를 함께
+        붙이면 참가자가 무엇 때문에 막혔는지 찾기 어려워진다. 통과한 제출에
+        경고를 보여줄 때는 기본값을 쓴다.
         """
+        findings = self.errors if errors_only else self.errors + self.warnings
         return [
             f"[{f.code}] {f.spec.message} ({f.count}건) {f.spec.hint}"
-            for f in self.errors + self.warnings
+            for f in findings
         ]
 
     def operator_payload(self) -> dict[str, Any]:

@@ -500,3 +500,25 @@ def test_participant_lines_carry_message_and_hint(contract, eval_ids, classes):
     assert "dtype=str" in joined
     for sample in report.get("E507").samples:
         assert sample not in joined
+
+
+def test_participant_lines_errors_only_drops_warnings(contract, eval_ids, classes):
+    """거절 메시지에는 경고를 섞지 않는다.
+
+    경고까지 붙이면 참가자가 무엇 때문에 막혔는지 찾기 어려워진다.
+    """
+    rows = valid_rows(eval_ids, classes)
+    for row in rows[1:]:
+        row[1] = "1.1"          # 전부 절삭 → E507 + E506/W904 경고 동반
+    report = validate_text(_csv(rows), contract)
+
+    assert report.warnings, "이 입력은 경고도 함께 나와야 한다"
+
+    only = report.participant_lines(errors_only=True)
+    assert all("E507" in line for line in only)
+    joined = " ".join(only)
+    for warning in report.warnings:
+        assert warning.code not in joined, f"거절 메시지에 경고 {warning.code} 가 섞였다"
+
+    both = report.participant_lines()
+    assert len(both) > len(only)

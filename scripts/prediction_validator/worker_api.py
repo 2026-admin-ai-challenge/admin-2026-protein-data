@@ -61,7 +61,10 @@ class ValidationOutcome:
     participant_response: dict[str, Any]
     operator_detail: dict[str, Any]
     participant_lines: list[str] = field(default_factory=list)
-    """참가자에게 보여줄 한 줄 메시지 목록. 메시지와 조치 안내를 함께 담는다."""
+    """참가자에게 보여줄 한 줄 메시지 목록(오류 + 경고). 조치 안내를 함께 담는다."""
+
+    participant_error_lines: list[str] = field(default_factory=list)
+    """거절 사유만 담은 한 줄 메시지 목록. 제출을 거절할 때 쓴다."""
 
     error_codes: list[str] = field(default_factory=list)
     warning_codes: list[str] = field(default_factory=list)
@@ -197,6 +200,7 @@ def validate_submission_output(
         operator_fault=report.operator_fault,
         participant_response=report.participant_payload(),
         participant_lines=report.participant_lines(),
+        participant_error_lines=report.participant_lines(errors_only=True),
         operator_detail=report.operator_payload(),
         error_codes=[f.code for f in report.errors],
         warning_codes=[f.code for f in report.warnings],
