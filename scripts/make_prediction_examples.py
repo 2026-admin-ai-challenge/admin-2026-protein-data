@@ -26,6 +26,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))   # allow running this file directly from the repo root
 
 from scripts.prediction_validator.contract import (  # noqa: E402
     load_classes_from_metadata,

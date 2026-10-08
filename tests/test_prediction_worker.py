@@ -57,8 +57,29 @@ def metadata_json(tmp_path) -> Path:
 
 
 @pytest.fixture
-def kw(eval_ids_csv, metadata_json) -> dict:
-    return {"eval_ids_csv": eval_ids_csv, "classes_metadata": metadata_json}
+def contract_path(tmp_path) -> Path:
+    """예제 픽스처 개수에 맞춘 계약 사본.
+
+    저장소 계약의 expected_rows 는 실제 평가셋(수천 건) 기준이다. 예제는 눈으로
+    읽을 수 있게 수십 건이라, 그대로 쓰면 어긋남 감지(E903)가 정당하게 걸린다.
+    웹 저장소도 자기 계약 사본을 들고 있으므로 이 구조가 실제와 같다.
+    """
+    shipped = json.loads(
+        (ROOT / "contract" / "prediction_contract.json").read_text(encoding="utf-8")
+    )
+    shipped["output"]["expected_rows"] = len(EVAL_IDS)
+    path = tmp_path / "prediction_contract.json"
+    path.write_text(json.dumps(shipped, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+@pytest.fixture
+def kw(eval_ids_csv, metadata_json, contract_path) -> dict:
+    return {
+        "eval_ids_csv": eval_ids_csv,
+        "classes_metadata": metadata_json,
+        "contract_path": contract_path,
+    }
 
 
 def test_valid_submission_passes(kw):
@@ -75,7 +96,7 @@ def test_classes_read_from_metadata(kw):
     assert outcome.operator_detail["summary"]["classes_allowed"] == len(CLASSES)
 
 
-def test_classes_read_from_train_csv(eval_ids_csv, tmp_path):
+def test_classes_read_from_train_csv(eval_ids_csv, tmp_path, contract_path):
     """metadata.json 이 없으면 train.csv 의 label 고유값으로도 되어야 한다."""
     train = tmp_path / "train.csv"
     with train.open("w", encoding="utf-8", newline="") as fh:
@@ -88,6 +109,7 @@ def test_classes_read_from_train_csv(eval_ids_csv, tmp_path):
         EXAMPLES / "valid/predictions.csv",
         eval_ids_csv=eval_ids_csv,
         classes_train_csv=train,
+        contract_path=contract_path,
     )
     assert outcome.ok, outcome.error_codes
 
@@ -100,11 +122,12 @@ def test_format_error_is_participant_fault(kw):
     assert "형식 오류" in outcome.summary_line
 
 
-def test_missing_class_list_is_operator_fault(eval_ids_csv):
+def test_missing_class_list_is_operator_fault(eval_ids_csv, contract_path):
     """클래스 목록을 못 읽으면 참가자를 탓하지 않아야 한다."""
     outcome = validate_submission_output(
         EXAMPLES / "valid/predictions.csv",
         eval_ids_csv=eval_ids_csv,
+        contract_path=contract_path,
     )
     assert not outcome.ok
     assert outcome.operator_fault
@@ -112,21 +135,23 @@ def test_missing_class_list_is_operator_fault(eval_ids_csv):
     assert "채점기 설정 오류" in outcome.summary_line
 
 
-def test_missing_eval_ids_is_operator_fault(metadata_json):
+def test_missing_eval_ids_is_operator_fault(metadata_json, contract_path):
     outcome = validate_submission_output(
         EXAMPLES / "valid/predictions.csv",
         classes_metadata=metadata_json,
+        contract_path=contract_path,
     )
     assert outcome.operator_fault
     assert "E902" in outcome.error_codes
 
 
-def test_shipped_placeholder_classes_trigger_operator_fault(eval_ids_csv):
+def test_shipped_placeholder_classes_trigger_operator_fault(eval_ids_csv, contract_path):
     """저장소에 들어 있는 플레이스홀더 목록으로는 채점을 시작할 수 없어야 한다."""
     outcome = validate_submission_output(
         EXAMPLES / "valid/predictions.csv",
         eval_ids_csv=eval_ids_csv,
         classes_file=ROOT / "contract" / "classes.txt",
+        contract_path=contract_path,
     )
     assert outcome.operator_fault
     assert "E901" in outcome.error_codes
