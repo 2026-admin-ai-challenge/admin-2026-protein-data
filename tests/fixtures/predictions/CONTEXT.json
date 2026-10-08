@@ -42,11 +42,11 @@
     "TEST_000018",
     "TEST_000019",
     "TEST_000020",
-    "TEST_000021",
     "TEST_000022",
     "TEST_000023",
-    "TEST_000024"
+    "TEST_000024",
+    "TEST_000025"
   ],
-  "source_classes": "..\\admin-2026-protein-data\\data\\public\\metadata.json",
-  "source_eval_ids": "..\\admin-2026-protein-data\\data\\private\\test.csv"
+  "source_classes": "data\\public\\metadata.json",
+  "source_eval_ids": "data\\private\\test.csv"
 }

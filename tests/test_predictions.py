@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 from scripts.prediction_validator import (  # noqa: E402
     load_contract,
+    verify_contract_against_dataset,
     validate_file,
     validate_text,
 )
@@ -116,7 +117,7 @@ def test_warning_only_examples_still_pass(expected, contract):
 def test_every_error_code_has_an_example(expected):
     """정의한 코드마다 예제가 있어야 한다. 아래 skip 은 별도 단위 테스트로 다룬다."""
     covered = {want["code"] for want in expected.values() if want["code"]}
-    skip = {"E101", "E103", "E901", "E902", "W904"}
+    skip = {"E101", "E103", "E901", "E902", "E903", "W904"}
     uncovered = {c for c in SPECS if c not in covered and c not in skip}
     assert not uncovered, f"예제 없는 코드: {sorted(uncovered)}"
 
@@ -201,13 +202,23 @@ def test_missing_ids_are_hidden_from_participant(contract, eval_ids, classes):
     assert "samples" not in e401 and "rows" not in e401
 
 
-def test_unknown_id_is_echoed_back(contract, eval_ids, classes):
-    """참가자가 보낸 값은 되돌려 줘도 평가셋이 새지 않는다."""
+def test_unknown_id_is_not_echoed_back(contract, eval_ids, classes):
+    """참가자가 보낸 값도 기본 응답에서는 되돌려 주지 않는다.
+
+    처음에는 "자기가 쓴 값이라 안전하다"고 봤지만, 참가자 코드가 숨김 평가
+    입력을 읽은 뒤 그 내용을 라벨·ID 칸에 담을 수 있다. 그러면 이 경로로
+    평가 데이터가 빠져나간다. 웹 저장소 app/scoring/predictions.py 가 같은
+    판단을 했고, 그쪽에 맞춰 기본값을 strict 로 바꿨다.
+    """
     rows = valid_rows(eval_ids, classes)
     rows[1][0] = "TEST_999999"
     report = validate_text(_csv(rows), contract)
+
     blob = json.dumps(report.participant_payload(), ensure_ascii=False)
-    assert "TEST_999999" in blob
+    assert "TEST_999999" not in blob
+
+    # 운영 로그에는 남아야 조사할 수 있다
+    assert "TEST_999999" in json.dumps(report.operator_payload(), ensure_ascii=False)
 
 
 # --- 라벨 세부 판정 -------------------------------------------------------
@@ -348,3 +359,167 @@ def test_shipped_class_list_is_placeholder(classes):
     from scripts.prediction_validator import load_classes
 
     assert load_classes(ROOT / "contract" / "classes.txt") == []
+
+
+# --- 계약·데이터셋 어긋남 감지 (E903) --------------------------------------
+#
+# 어긋남은 제출의 성질이 아니라 설정의 성질이다. 그래서 제출 검증 경로가 아니라
+# verify_contract_against_dataset() 로 분리했다. 제출마다 보게 했더니 평가 ID
+# 일부만 주입하는 정당한 호출(웹 저장소 tests/test_scoring.py 는 2건만 주입)이
+# 전부 막혔다.
+
+def test_drift_is_detected_by_the_startup_check(tmp_path, eval_ids):
+    """계약의 expected_rows 가 데이터셋과 다르면 E903 운영 측 오류."""
+    shipped = json.loads(
+        (ROOT / "contract" / "prediction_contract.json").read_text(encoding="utf-8")
+    )
+    shipped["output"]["expected_rows"] = len(eval_ids) + 7
+    path = tmp_path / "stale_contract.json"
+    path.write_text(json.dumps(shipped, ensure_ascii=False), encoding="utf-8")
+
+    report = verify_contract_against_dataset(contract_path=path, eval_ids=eval_ids)
+    assert "E903" in report.codes
+    assert report.operator_fault
+    assert not report.ok
+
+
+def test_matching_contract_passes_the_startup_check(tmp_path, eval_ids):
+    shipped = json.loads(
+        (ROOT / "contract" / "prediction_contract.json").read_text(encoding="utf-8")
+    )
+    shipped["output"]["expected_rows"] = len(eval_ids)
+    path = tmp_path / "contract.json"
+    path.write_text(json.dumps(shipped, ensure_ascii=False), encoding="utf-8")
+
+    report = verify_contract_against_dataset(contract_path=path, eval_ids=eval_ids)
+    assert report.ok, report.codes
+
+
+def test_startup_check_needs_eval_ids(tmp_path):
+    report = verify_contract_against_dataset(eval_ids=[])
+    assert "E902" in report.codes
+
+
+def test_submission_path_ignores_contract_row_count(contract, eval_ids, classes):
+    """제출 검증은 계약의 숫자가 아니라 주입된 평가 ID를 기준으로 판정한다.
+
+    평가 ID 일부만 주입하는 호출을 막지 않아야 한다.
+    """
+    contract.expected_rows = len(eval_ids) + 1000
+    report = validate_text(_csv(valid_rows(eval_ids, classes)), contract)
+    assert report.ok, report.codes
+    assert "E903" not in report.codes
+
+
+def test_missing_expected_rows_still_checks_row_count(contract, eval_ids, classes):
+    """expected_rows 가 없어도 행 수 검사는 돌아야 한다.
+
+    예전에는 이 값이 None 이면 E302 검사를 건너뛰었다. 기준은 주입된 평가 ID다.
+    """
+    contract.expected_rows = None
+    rows = valid_rows(eval_ids, classes)[:-2]
+    report = validate_text(_csv(rows), contract)
+    assert "E302" in report.codes
+
+
+def test_shipped_contract_matches_dataset():
+    """저장소의 계약 파일이 현재 데이터셋과 맞는지 CI 에서 확인한다.
+
+    이 테스트가 깨지면 데이터셋 재생성 후 계약 갱신이 빠진 것이다.
+    """
+    test_csv = ROOT / "data" / "private" / "test.csv"
+    if not test_csv.is_file():
+        pytest.skip("평가 입력이 없는 환경 (데이터 미배치)")
+
+    report = verify_contract_against_dataset(eval_ids_csv=test_csv)
+    assert report.ok, (
+        f"{report.summary} — contract/prediction_contract.json 의 expected_rows 를 "
+        "갱신하고 웹 저장소 사본도 함께 맞추세요."
+    )
+
+
+# --- 참가자 응답 정책 ------------------------------------------------------
+
+def test_participant_payload_is_strict_by_default(contract, eval_ids, classes):
+    """기본 응답에는 예측 파일에서 온 값이 없어야 한다."""
+    rows = valid_rows(eval_ids, classes)
+    rows[1][1] = "없는클래스"
+    report = validate_text(_csv(rows), contract)
+
+    payload = report.participant_payload()
+    for item in payload["errors"] + payload["warnings"]:
+        assert "samples" not in item, f"{item['code']} 에 samples 가 노출됐다"
+        assert "rows" not in item, f"{item['code']} 에 rows 가 노출됐다"
+
+
+def test_participant_payload_always_includes_hint(contract, eval_ids, classes):
+    """조치 안내는 고정 문자열이라 strict 에서도 나가야 한다.
+
+    이게 빠지면 참가자는 무엇이 틀렸는지만 알고 고치는 방법은 모른다.
+    """
+    rows = valid_rows(eval_ids, classes)
+    rows[1][1] = "1.1"
+    report = validate_text(_csv(rows), contract)
+
+    payload = report.participant_payload()
+    e507 = next(e for e in payload["errors"] if e["code"] == "E507")
+    assert e507["hint"]
+    assert "dtype=str" in e507["hint"]
+
+
+def test_relaxed_payload_adds_samples(contract, eval_ids, classes):
+    rows = valid_rows(eval_ids, classes)
+    rows[1][1] = "없는클래스"
+    report = validate_text(_csv(rows), contract)
+
+    relaxed = report.participant_payload(strict=False)
+    e502 = next(e for e in relaxed["errors"] if e["code"] == "E502")
+    assert e502.get("samples")
+
+
+def test_relaxed_payload_still_hides_eval_ids(contract, eval_ids, classes):
+    """완화 모드에서도 누락 평가 ID는 나가지 않아야 한다."""
+    rows = valid_rows(eval_ids, classes)[:-3]
+    report = validate_text(_csv(rows), contract)
+
+    relaxed = report.participant_payload(strict=False)
+    e401 = next(e for e in relaxed["errors"] if e["code"] == "E401")
+    assert "samples" not in e401 and "rows" not in e401
+
+
+def test_participant_lines_carry_message_and_hint(contract, eval_ids, classes):
+    """작업자가 메시지를 직접 조립하다 hint 를 빠뜨리는 것을 막는 헬퍼."""
+    rows = valid_rows(eval_ids, classes)
+    rows[1][1] = "1.1"
+    report = validate_text(_csv(rows), contract)
+
+    lines = report.participant_lines()
+    assert lines
+    joined = "\n".join(lines)
+    assert "E507" in joined
+    assert "dtype=str" in joined
+    for sample in report.get("E507").samples:
+        assert sample not in joined
+
+
+def test_participant_lines_errors_only_drops_warnings(contract, eval_ids, classes):
+    """거절 메시지에는 경고를 섞지 않는다.
+
+    경고까지 붙이면 참가자가 무엇 때문에 막혔는지 찾기 어려워진다.
+    """
+    rows = valid_rows(eval_ids, classes)
+    rows[1][1] = "없는클래스"          # 오류: E502
+    rows[2][0] = f" {rows[2][0]} "      # 경고: E406 (공백은 교정하고 통과시킨다)
+    report = validate_text(_csv(rows), contract)
+
+    assert "E502" in report.codes and "E406" in report.codes
+    assert report.warnings, "이 입력은 경고도 함께 나와야 한다"
+
+    only = report.participant_lines(errors_only=True)
+    assert all("E502" in line for line in only)
+    joined = " ".join(only)
+    for warning in report.warnings:
+        assert warning.code not in joined, f"거절 메시지에 경고 {warning.code} 가 섞였다"
+
+    both = report.participant_lines()
+    assert len(both) > len(only)
